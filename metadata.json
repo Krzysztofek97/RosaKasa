@@ -1,0 +1,6 @@
+{
+  "name": "RosaKasa",
+  "description": "RosaKasa to nowoczesna aplikacja do zarządzania budżetem domowym metodą kopertową. Umożliwia planowanie wydatków, rozdzielanie wolnych środków, oszczędzanie na cele oraz wizualizację finansów w formie wykresów kołowych.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
