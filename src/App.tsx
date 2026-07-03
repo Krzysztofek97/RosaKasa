@@ -231,19 +231,35 @@ function healRollovers(monthsList: BudgetMonth[]): BudgetMonth[] {
       const template = goalTemplates.get(id)!;
       const existing = m.savingGoals.find(g => g.id === id);
       if (existing) {
-        updatedGoals.push({
+        const updatedGoal = {
           ...existing,
           name: template.name,
           target: template.target,
           color: template.color,
-          autoTransferAmount: template.autoTransferAmount,
-          autoTransferDay: template.autoTransferDay,
-        });
+        };
+        if (template.icon !== undefined) updatedGoal.icon = template.icon;
+        
+        if (template.autoTransferAmount !== undefined) {
+          updatedGoal.autoTransferAmount = template.autoTransferAmount;
+        } else {
+          delete updatedGoal.autoTransferAmount;
+        }
+        
+        if (template.autoTransferDay !== undefined) {
+          updatedGoal.autoTransferDay = template.autoTransferDay;
+        } else {
+          delete updatedGoal.autoTransferDay;
+        }
+        
+        updatedGoals.push(updatedGoal);
       } else {
-        updatedGoals.push({
+        const newGoal = {
           ...template,
           current: 0,
-        });
+        };
+        if (newGoal.autoTransferAmount === undefined) delete newGoal.autoTransferAmount;
+        if (newGoal.autoTransferDay === undefined) delete newGoal.autoTransferDay;
+        updatedGoals.push(newGoal);
       }
     });
     sorted[i] = {
