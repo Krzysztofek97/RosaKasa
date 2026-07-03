@@ -628,7 +628,9 @@ export default function App() {
       const newBudgets = prev.map(b => b.id === activeBudgetId ? { ...b, months: healed } : b);
       const currentUser = auth.currentUser;
       if (currentUser) {
-        setDoc(doc(db, 'budgets', currentUser.uid), { budgets: newBudgets }, { merge: true });
+        // Usuwamy rekursywnie wszystkie wartości undefined, aby Firebase nie zwracał błędów Unsupported field value: undefined
+        const cleanBudgets = JSON.parse(JSON.stringify(newBudgets));
+        setDoc(doc(db, 'budgets', currentUser.uid), { budgets: cleanBudgets }, { merge: true });
       }
       return newBudgets;
     });
@@ -1038,6 +1040,10 @@ export default function App() {
         isConfirmed: false,
         ...data,
       };
+      
+      // Usuwamy undefined aby Firestore nie wywalił błędu
+      if (pt.envelopeId === undefined) delete pt.envelopeId;
+      if (pt.envelopeName === undefined) delete pt.envelopeName;
 
       let updatedMonths = months.map(m => {
         if (m.id !== selectedMonthId) return m;
@@ -1070,6 +1076,8 @@ export default function App() {
               envelopeId: futureEnvelopeId,
               envelopeName: futureEnvelopeName,
             };
+            if (futurePt.envelopeId === undefined) delete futurePt.envelopeId;
+            if (futurePt.envelopeName === undefined) delete futurePt.envelopeName;
             return { ...m, plannedTransactions: [...(m.plannedTransactions || []), futurePt] };
           });
         } else if (pt.frequency === 'weekly' || pt.frequency === 'biweekly') {
@@ -1093,6 +1101,8 @@ export default function App() {
                 envelopeId: futureEnvelopeId,
                 envelopeName: futureEnvelopeName,
               };
+              if (futurePt.envelopeId === undefined) delete futurePt.envelopeId;
+              if (futurePt.envelopeName === undefined) delete futurePt.envelopeName;
               return { ...m, plannedTransactions: [...(m.plannedTransactions || []), futurePt] };
             });
           });
