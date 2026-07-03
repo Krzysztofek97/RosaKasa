@@ -16,6 +16,7 @@ interface HeaderProps {
   selectedMonthId: string;
   onSelectMonth: (id: string) => void;
   onOpenChangelog?: () => void;
+  onOpenSettings?: () => void;
   hideClosedMonths?: boolean;
   showControls?: boolean;
 }
@@ -36,6 +37,7 @@ export default function Header({
   selectedMonthId,
   onSelectMonth,
   onOpenChangelog,
+  onOpenSettings,
   hideClosedMonths = false,
   showControls = true
 }: HeaderProps) {
@@ -180,15 +182,27 @@ export default function Header({
           {onOpenChangelog && (
             <button
               onClick={onOpenChangelog}
-              className="flex items-center gap-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 hover:text-amber-900 text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 md:px-2 md:py-0.5 rounded border border-amber-500/20 transition-all cursor-pointer relative ml-1"
+              className="lg:hidden flex items-center gap-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 hover:text-amber-900 text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 md:px-2 md:py-0.5 rounded border border-amber-500/20 transition-all cursor-pointer relative ml-1"
               title="Co nowego w RosaKasa?"
               id="btn-header-changelog"
             >
               <LucideIcon name="History" size={10} className="text-amber-600 animate-spin-slow" />
-              <span>Co nowego?</span>
+              <span className="hidden sm:inline">Co nowego?</span>
               <span className="absolute -top-1 -right-1 bg-red-500 text-[6px] md:text-[7px] text-white px-1 py-0.5 md:px-1.5 md:py-0.5 rounded-full font-mono scale-75 font-extrabold flex items-center justify-center animate-pulse">
                 NEW
               </span>
+            </button>
+          )}
+
+          {onOpenSettings && (
+            <button
+              onClick={onOpenSettings}
+              className="lg:hidden flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] md:text-[11px] font-bold px-2 py-1 md:px-2.5 md:py-1 rounded-lg transition-all cursor-pointer ml-1"
+              title="Ustawienia"
+              id="btn-header-settings"
+            >
+              <LucideIcon name="Settings" size={12} className="text-slate-600" />
+              <span className="hidden sm:inline">Ustawienia</span>
             </button>
           )}
 

@@ -1597,6 +1597,8 @@ export default function App() {
             months={computedMonths}
             selectedMonthId={selectedMonthId}
             onSelectMonth={setSelectedMonthId}
+            onOpenChangelog={() => setIsChangelogOpen(true)}
+            onOpenSettings={() => setIsSettingsOpen(true)}
             showControls={activeTab === 'envelopes'}
           />
 
