@@ -1243,9 +1243,10 @@ export default function App() {
           current: m.id === selectedMonthId ? targetCurrent : 0,
           icon: goalData.icon,
           color: goalData.color,
-          autoTransferAmount: goalData.autoTransferAmount,
-          autoTransferDay: goalData.autoTransferDay,
         };
+        if (goalData.autoTransferAmount !== undefined) newGoal.autoTransferAmount = goalData.autoTransferAmount;
+        if (goalData.autoTransferDay !== undefined) newGoal.autoTransferDay = goalData.autoTransferDay;
+
         return {
           ...m,
           savingGoals: [...m.savingGoals, newGoal]
