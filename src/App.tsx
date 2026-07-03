@@ -1583,6 +1583,7 @@ export default function App() {
           setActiveTab={setActiveTab}
           onOpenChangelog={() => setIsChangelogOpen(true)}
           onOpenSettings={() => setIsSettingsOpen(true)}
+          onLogout={() => signOut(auth)}
         />
 
         {/* Main content */}
@@ -1912,6 +1913,7 @@ interface NavProps {
   setActiveTab: (tab: 'envelopes' | 'savings' | 'stats' | 'transactions') => void;
   onOpenChangelog?: () => void;
   onOpenSettings?: () => void;
+  onLogout?: () => void;
 }
 
 const TABS = [
@@ -1921,7 +1923,7 @@ const TABS = [
   { id: 'transactions' as const, name: 'Transakcje', icon: 'History' },
 ];
 
-function DesktopSidebar({ activeTab, setActiveTab, onOpenChangelog, onOpenSettings }: NavProps) {
+function DesktopSidebar({ activeTab, setActiveTab, onOpenChangelog, onOpenSettings, onLogout }: NavProps) {
   return (
     <aside className="hidden lg:flex flex-col fixed left-0 top-0 bottom-0 w-56 bg-white border-r border-slate-100 z-30 py-6 px-3">
       <div className="px-3 mb-6 flex justify-center">
@@ -1967,6 +1969,17 @@ function DesktopSidebar({ activeTab, setActiveTab, onOpenChangelog, onOpenSettin
               <LucideIcon name="Settings" size={14} />
             </div>
             Ustawienia
+          </button>
+        )}
+        {onLogout && (
+          <button
+            onClick={onLogout}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all cursor-pointer group"
+          >
+            <div className="p-1.5 rounded-lg bg-slate-100 text-slate-500 group-hover:text-rose-600">
+              <LucideIcon name="LogOut" size={14} />
+            </div>
+            Wyloguj się
           </button>
         )}
       </div>

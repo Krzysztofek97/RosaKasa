@@ -124,7 +124,8 @@ import {
   LineChart,
   LayoutDashboard,
   Folder,
-  FolderOpen
+  FolderOpen,
+  LogOut
 } from 'lucide-react';
 
 interface LucideIconProps {
@@ -412,6 +413,8 @@ export default function LucideIcon({ name, className = '', size }: LucideIconPro
     case 'folderopen':
     case 'folder-open':
       return <FolderOpen {...iconProps} />;
+    case 'logout':
+      return <LogOut {...iconProps} />;
     default:
       // Fallback
       return <Wallet {...iconProps} />;

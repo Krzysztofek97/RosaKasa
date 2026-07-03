@@ -208,7 +208,7 @@ export default function Header({
 
           <button
             onClick={() => signOut(auth)}
-            className="flex items-center gap-1.5 px-2 py-1.5 text-xs font-semibold text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer ml-1 md:ml-2"
+            className="lg:hidden flex items-center gap-1.5 px-2 py-1.5 text-xs font-semibold text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer ml-1 md:ml-2"
             title="Wyloguj się"
           >
             <LucideIcon name="LogOut" size={14} />
