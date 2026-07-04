@@ -840,22 +840,22 @@ export default function App() {
       return env ? env.name.toLowerCase().trim() : '';
     }).filter(Boolean);
 
-    setMonths(prev => {
-      return prev.map(m => {
-        const newEnvelopes = [...m.envelopes].sort((a, b) => {
-          const aName = a.name.toLowerCase().trim();
-          const bName = b.name.toLowerCase().trim();
-          const aIndex = orderedNames.indexOf(aName);
-          const bIndex = orderedNames.indexOf(bName);
-          
-          if (aIndex === -1 && bIndex === -1) return 0;
-          if (aIndex === -1) return 1;
-          if (bIndex === -1) return -1;
-          return aIndex - bIndex;
-        });
-        return { ...m, envelopes: newEnvelopes };
+    const updatedMonths = months.map(m => {
+      const newEnvelopes = [...m.envelopes].sort((a, b) => {
+        const aName = a.name.toLowerCase().trim();
+        const bName = b.name.toLowerCase().trim();
+        const aIndex = orderedNames.indexOf(aName);
+        const bIndex = orderedNames.indexOf(bName);
+        
+        if (aIndex === -1 && bIndex === -1) return 0;
+        if (aIndex === -1) return 1;
+        if (bIndex === -1) return -1;
+        return aIndex - bIndex;
       });
+      return { ...m, envelopes: newEnvelopes };
     });
+    
+    saveToStorage(updatedMonths);
   };
 
   const handleDeleteEnvelope = (envelopeId: string) => {
