@@ -1426,7 +1426,7 @@ export default function App() {
     if (amount && rolloverEnvelopeIds && rolloverEnvelopeIds.length > 0) {
       showAlert('Ustawienia zapisane', `Auto-przelew (${formatCurrency(amount)}) oraz przenoszenie nadwyżek aktywne.`);
     } else if (amount) {
-      showAlert('Auto-przelew ustawiony', `Będzie przesyłać ${formatCurrency(amount)} w dniu ${day} każdego miesiąca.`);
+      showAlert('Auto-przelew ustawiony', `Kwota ${formatCurrency(amount)} będzie automatycznie przelewana ${day}. dnia każdego miesiąca.`);
     } else if (rolloverEnvelopeIds && rolloverEnvelopeIds.length > 0) {
       showAlert('Przenoszenie nadwyżek aktywne', `Nadwyżki z wybranych kopert zasilą cel.`);
     } else {
@@ -1844,6 +1844,7 @@ export default function App() {
           onSave={handleSaveEnvelope}
           envelope={envelopeToEdit}
           savingGoals={activeMonth.savingGoals}
+          transactions={activeMonth.transactions}
           onDelete={handleDeleteEnvelope}
           onArchive={handleArchiveEnvelope}
           canDelete={envelopeToEdit ? !months.some(m => m.transactions.some(t => t.type === 'expense' && t.envelopeName.toLowerCase().trim() === envelopeToEdit.name.toLowerCase().trim())) : true}

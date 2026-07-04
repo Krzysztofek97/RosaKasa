@@ -116,9 +116,9 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
               contentStyle={{ borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '12px' }}
               labelStyle={{ fontWeight: '900', color: '#1e293b', marginBottom: '8px', fontSize: '14px', textTransform: 'capitalize' }}
               formatter={(value: any, name: string) => {
-                if (name === 'expenseNeg') return [formatCurrency(Math.abs(Number(value))), 'Wydatek'];
-                if (name === 'income') return [formatCurrency(Number(value)), 'Przychód'];
-                if (name === 'balance') return [formatCurrency(Number(value)), 'Bilans'];
+                if (name === 'Wydatek' || name === 'expenseNeg') return [formatCurrency(Math.abs(Number(value))), 'Wydatek'];
+                if (name === 'Przychód' || name === 'income') return [formatCurrency(Number(value)), 'Przychód'];
+                if (name === 'Bilans' || name === 'balance') return [formatCurrency(Number(value)), 'Bilans'];
                 return [value, name];
               }}
             />

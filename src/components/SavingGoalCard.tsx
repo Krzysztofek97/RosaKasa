@@ -199,7 +199,7 @@ export default function SavingGoalCard({
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-slate-600 font-medium">
             <LucideIcon name="RotateCcw" className="text-slate-500" size={13} />
-            <span>Auto-przelew & Rollover</span>
+            <span>Auto-przelew i Nadwyżki</span>
             <span className="group relative cursor-pointer text-slate-400 hover:text-slate-600">
               <LucideIcon name="Info" size={12} />
               <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-[10px] rounded shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-200 leading-normal z-50">

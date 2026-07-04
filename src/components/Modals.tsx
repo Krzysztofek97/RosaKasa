@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Envelope, SavingGoal, BudgetMonth, AppSettings } from '../types';
+import { Envelope, SavingGoal, BudgetMonth, AppSettings, Transaction } from '../types';
 import { formatCurrency } from '../utils';
 import { AVAILABLE_COLORS, getColorConfig } from '../data';
 import LucideIcon from './LucideIcon';
@@ -18,9 +18,10 @@ interface EditEnvelopeModalProps {
   onDelete?: (id: string) => void;
   onArchive?: (id: string) => void;
   canDelete?: boolean;
+  transactions?: Transaction[];
 }
 
-export function EditEnvelopeModal({ isOpen, onClose, envelope, onSave, savingGoals, onDelete, onArchive, canDelete = true }: EditEnvelopeModalProps) {
+export function EditEnvelopeModal({ isOpen, onClose, envelope, onSave, savingGoals, onDelete, onArchive, canDelete = true, transactions = [] }: EditEnvelopeModalProps) {
   const [name, setName] = useState('');
   const [limit, setLimit] = useState('');
   const [icon, setIcon] = useState('Utensils');
@@ -150,7 +151,30 @@ export function EditEnvelopeModal({ isOpen, onClose, envelope, onSave, savingGoa
 
           {envelope && (
             <div className="pt-4 border-t border-white/50 space-y-3">
-              <div className="flex flex-col gap-2">
+              {/* Historia transakcji */}
+              {transactions.filter(t => t.envelopeName.toLowerCase().trim() === envelope.name.toLowerCase().trim()).length > 0 && (
+                <div className="flex flex-col gap-2">
+                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Historia transakcji w tym miesiącu</label>
+                  <div className="bg-white/40 border border-white/50 rounded-xl max-h-36 overflow-y-auto p-1.5 space-y-1 scrollbar-thin">
+                    {transactions
+                      .filter(t => t.envelopeName.toLowerCase().trim() === envelope.name.toLowerCase().trim())
+                      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                      .map(t => (
+                        <div key={t.id} className="flex justify-between items-center text-xs p-2 hover:bg-white/60 rounded-lg transition-colors">
+                          <div className="flex flex-col">
+                            <span className="font-bold text-slate-700">{t.description}</span>
+                            <span className="text-[10px] text-slate-500">{t.date}</span>
+                          </div>
+                          <span className={`font-bold ${t.type === 'expense' ? 'text-rose-600' : 'text-emerald-600'}`}>
+                            {t.type === 'expense' ? '-' : '+'}{formatCurrency(t.amount)}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex flex-col gap-2 pt-2 mt-2 border-t border-white/30">
                 <button
                   type="button"
                   onClick={() => {
