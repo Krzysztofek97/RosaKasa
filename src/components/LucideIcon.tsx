@@ -125,7 +125,9 @@ import {
   LayoutDashboard,
   Folder,
   FolderOpen,
-  LogOut
+  LogOut,
+  ArrowUpDown,
+  GripVertical
 } from 'lucide-react';
 
 interface LucideIconProps {
@@ -415,6 +417,12 @@ export default function LucideIcon({ name, className = '', size }: LucideIconPro
       return <FolderOpen {...iconProps} />;
     case 'logout':
       return <LogOut {...iconProps} />;
+    case 'arrowupdown':
+    case 'arrow-up-down':
+      return <ArrowUpDown {...iconProps} />;
+    case 'gripvertical':
+    case 'grip-vertical':
+      return <GripVertical {...iconProps} />;
     default:
       // Fallback
       return <Wallet {...iconProps} />;
