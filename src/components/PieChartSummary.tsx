@@ -8,10 +8,11 @@ import LucideIcon from './LucideIcon';
 interface PieChartSummaryProps {
   months: BudgetMonth[];
   envelopes: { id: string; name: string; color: string; icon: string; }[];
+  savingGoals?: { id: string; name: string; color?: string; icon?: string; }[];
   globalSelectedMonthId: string;
 }
 
-export default function PieChartSummary({ months, envelopes, globalSelectedMonthId }: PieChartSummaryProps) {
+export default function PieChartSummary({ months, envelopes, savingGoals = [], globalSelectedMonthId }: PieChartSummaryProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   
   // Stan do wyboru konkretnego miesiąca z historii dla tego widoku (albo całego roku)
@@ -42,7 +43,7 @@ export default function PieChartSummary({ months, envelopes, globalSelectedMonth
   }, [currentYearMonths, localScope]);
 
   const chartData = useMemo(() => {
-    const expenses = activeTxList.filter(t => t.type === 'expense');
+    const expenses = activeTxList.filter(t => t.type === 'expense' || (t.type === 'saving_transfer' && !t.isWithdrawal));
     
     const aggregated = new Map<string, { amount: number; originalName: string }>();
     expenses.forEach(t => {
@@ -54,19 +55,21 @@ export default function PieChartSummary({ months, envelopes, globalSelectedMonth
 
     const data = Array.from(aggregated.entries()).map(([key, info]) => {
       const env = envelopes.find(e => e.name.toLowerCase().trim() === key);
+      const goal = savingGoals.find(g => g.name.toLowerCase().trim() === key);
+      
       return {
-        name: env?.name || info.originalName,
+        name: env?.name || goal?.name || info.originalName,
         value: info.amount,
-        colorClass: env?.color || 'slate',
+        colorClass: env?.color || goal?.color || 'slate',
         envKey: key,
-        icon: env?.icon || 'Folder',
+        icon: env?.icon || goal?.icon || 'Folder',
       };
     });
 
     return data
       .filter(item => item.value > 0)
       .sort((a, b) => b.value - a.value);
-  }, [activeTxList, envelopes]);
+  }, [activeTxList, envelopes, savingGoals]);
 
   const totalValue = chartData.reduce((sum, item) => sum + item.value, 0);
   const selectedData = activeIndex !== null ? chartData[activeIndex] : null;
@@ -74,7 +77,7 @@ export default function PieChartSummary({ months, envelopes, globalSelectedMonth
   const activeTransactions = useMemo(() => {
     if (!selectedData) return [];
     return activeTxList
-      .filter(t => t.type === 'expense' && (t.envelopeName || 'Nieznana').toLowerCase().trim() === selectedData.envKey)
+      .filter(t => (t.type === 'expense' || (t.type === 'saving_transfer' && !t.isWithdrawal)) && (t.envelopeName || 'Nieznana').toLowerCase().trim() === selectedData.envKey)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [activeTxList, selectedData]);
 

@@ -15,7 +15,7 @@ import StatsView from './components/StatsView';
 import TransactionList from './components/TransactionList';
 import MonthScopeSelector from './components/MonthScopeSelector';
 import LucideIcon from './components/LucideIcon';
-import SavingsSimulator from './components/SavingsSimulator';
+
 import PlannedTransactionsBanner from './components/PlannedTransactionsBanner';
 import {
   EditEnvelopeModal,
@@ -1777,7 +1777,7 @@ export default function App() {
                       ))
                     )}
                   </div>
-                  <SavingsSimulator activeMonth={activeMonth} />
+
                 </motion.div>
               )}
 
@@ -1788,6 +1788,7 @@ export default function App() {
                     months={computedMonths}
                     selectedMonthId={selectedMonthId}
                     envelopes={scopedEnvelopes}
+                    savingGoals={activeMonth.savingGoals}
                   />
                 </motion.div>
               )}

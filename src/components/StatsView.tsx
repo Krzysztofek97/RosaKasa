@@ -9,11 +9,12 @@ interface StatsViewProps {
   months: BudgetMonth[];
   selectedMonthId: string;
   envelopes: { id: string; name: string; color: string; icon: string; }[];
+  savingGoals: { id: string; name: string; color?: string; icon?: string; }[];
 }
 
 type StatTab = 'flow' | 'structure';
 
-export default function StatsView({ months, selectedMonthId, envelopes }: StatsViewProps) {
+export default function StatsView({ months, selectedMonthId, envelopes, savingGoals }: StatsViewProps) {
   const [activeTab, setActiveTab] = useState<StatTab>('flow');
 
   return (
@@ -58,6 +59,7 @@ export default function StatsView({ months, selectedMonthId, envelopes }: StatsV
               <PieChartSummary 
                 months={months} 
                 envelopes={envelopes} 
+                savingGoals={savingGoals}
                 globalSelectedMonthId={selectedMonthId}
               />
             </motion.div>

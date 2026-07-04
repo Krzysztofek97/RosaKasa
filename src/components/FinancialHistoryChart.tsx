@@ -22,9 +22,14 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
     let mapped = filtered.map(m => {
       let mInc = 0;
       let mExp = 0;
+      let mSav = 0;
       (m.transactions || []).forEach(t => {
         if (t.type === 'income') mInc += t.amount;
         if (t.type === 'expense') mExp += t.amount;
+        if (t.type === 'saving_transfer') {
+          if (!t.isWithdrawal) mSav += t.amount;
+          else mSav -= t.amount;
+        }
       });
       return {
         id: m.id,
@@ -33,8 +38,9 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
         income: mInc,
         expense: mExp,
         expenseNeg: -mExp, // Wykorzystane do rysowania wykresu pod osią 0
+        savings: mSav,
         balance: mInc - mExp,
-        hasActivity: mInc > 0 || mExp > 0
+        hasActivity: mInc > 0 || mExp > 0 || mSav !== 0
       };
     });
 
@@ -52,8 +58,9 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
     return chartData.reduce((acc, curr) => ({
       income: acc.income + curr.income,
       expense: acc.expense + curr.expense,
+      savings: acc.savings + curr.savings,
       balance: acc.balance + curr.balance
-    }), { income: 0, expense: 0, balance: 0 });
+    }), { income: 0, expense: 0, savings: 0, balance: 0 });
   }, [chartData]);
 
   if (chartData.length === 0) return null;
@@ -83,6 +90,10 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
           <div className="bg-rose-50/80 border border-rose-100 p-3 px-5 rounded-2xl flex flex-col items-center min-w-[120px]">
             <span className="text-[10px] uppercase font-bold text-rose-600 mb-1 tracking-wider">Wydatek (Rok)</span>
             <span className="text-lg font-black text-rose-700 font-mono">{formatCurrency(summary.expense)}</span>
+          </div>
+          <div className="bg-blue-50/80 border border-blue-100 p-3 px-5 rounded-2xl flex flex-col items-center min-w-[120px]">
+            <span className="text-[10px] uppercase font-bold text-blue-600 mb-1 tracking-wider">Oszczędności (Rok)</span>
+            <span className="text-lg font-black text-blue-700 font-mono">{formatCurrency(summary.savings)}</span>
           </div>
           <div className={`border p-3 px-5 rounded-2xl flex flex-col items-center min-w-[130px] shadow-sm ${summary.balance >= 0 ? 'bg-white border-emerald-200 shadow-emerald-500/10' : 'bg-white border-rose-200 shadow-rose-500/10'}`}>
             <span className="text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-wider">Bilans Roku</span>
@@ -118,6 +129,7 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
               formatter={(value: any, name: string) => {
                 if (name === 'Wydatek' || name === 'expenseNeg') return [formatCurrency(Math.abs(Number(value))), 'Wydatek'];
                 if (name === 'Przychód' || name === 'income') return [formatCurrency(Number(value)), 'Przychód'];
+                if (name === 'Oszczędności' || name === 'savings') return [formatCurrency(Number(value)), 'Oszczędności'];
                 if (name === 'Bilans' || name === 'balance') return [formatCurrency(Number(value)), 'Bilans'];
                 return [value, name];
               }}
@@ -127,6 +139,9 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
             {/* Słupki stacked w jednym paśmie (na i pod osią zero) */}
             <Bar dataKey="income" name="Przychód" fill="#34d399" radius={[4, 4, 0, 0]} maxBarSize={32} stackId="a" />
             <Bar dataKey="expenseNeg" name="Wydatek" fill="#fb7185" radius={[0, 0, 4, 4]} maxBarSize={32} stackId="a" />
+            
+            {/* Oszczędności obok przychodu/wydatku */}
+            <Bar dataKey="savings" name="Oszczędności" fill="#60a5fa" radius={[4, 4, 0, 0]} maxBarSize={32} />
             
             {/* Liniowy trend bilansu z "kółkami" na wierzchołkach */}
             <Line 
@@ -158,6 +173,7 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
                 <th className="px-6 py-4">Miesiąc</th>
                 <th className="px-6 py-4 text-right">Przychód</th>
                 <th className="px-6 py-4 text-right">Wydatek</th>
+                <th className="px-6 py-4 text-right">Oszczędności</th>
                 <th className="px-6 py-4 text-right">Bilans</th>
               </tr>
             </thead>
@@ -172,6 +188,9 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
                   </td>
                   <td className="px-6 py-4 text-right text-slate-500 font-mono">
                     {row.expense > 0 ? '-' : ''}{formatCurrency(row.expense)}
+                  </td>
+                  <td className="px-6 py-4 text-right text-slate-500 font-mono">
+                    {row.savings > 0 ? '+' : ''}{formatCurrency(row.savings)}
                   </td>
                   <td className="px-6 py-4 text-right font-mono font-bold">
                     <span className={row.balance > 0 ? 'text-emerald-600' : row.balance < 0 ? 'text-rose-600' : 'text-slate-400'}>
