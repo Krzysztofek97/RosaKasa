@@ -29,6 +29,7 @@ import { EditTransactionModal } from './components/EditTransactionModal';
 import AllocateModal from './components/AllocateModal';
 import EnvelopeActionsModal from './components/EnvelopeActionsModal';
 import TransferModal from './components/TransferModal';
+import ReorderEnvelopesModal from './components/ReorderEnvelopesModal';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
@@ -480,6 +481,7 @@ export default function App() {
 
   // Modal state
   const [isEditEnvOpen, setIsEditEnvOpen] = useState(false);
+  const [isReorderOpen, setIsReorderOpen] = useState(false);
   const [envelopeToEdit, setEnvelopeToEdit] = useState<Envelope | null>(null);
   const [goalToEdit, setGoalToEdit] = useState<SavingGoal | null>(null);
   const [isAddGoalOpen, setIsAddGoalOpen] = useState(false);
@@ -832,6 +834,30 @@ export default function App() {
   };
 
   /** Usuwa kopertę i zwraca pozostałe środki do Wolnych Środków */
+  const handleReorderEnvelopes = (newOrderIds: string[]) => {
+    const orderedNames = newOrderIds.map(id => {
+      const env = activeMonth.envelopes.find(e => e.id === id);
+      return env ? env.name.toLowerCase().trim() : '';
+    }).filter(Boolean);
+
+    setMonths(prev => {
+      return prev.map(m => {
+        const newEnvelopes = [...m.envelopes].sort((a, b) => {
+          const aName = a.name.toLowerCase().trim();
+          const bName = b.name.toLowerCase().trim();
+          const aIndex = orderedNames.indexOf(aName);
+          const bIndex = orderedNames.indexOf(bName);
+          
+          if (aIndex === -1 && bIndex === -1) return 0;
+          if (aIndex === -1) return 1;
+          if (bIndex === -1) return -1;
+          return aIndex - bIndex;
+        });
+        return { ...m, envelopes: newEnvelopes };
+      });
+    });
+  };
+
   const handleDeleteEnvelope = (envelopeId: string) => {
     const env = activeMonth.envelopes.find(e => e.id === envelopeId);
     if (!env) return;
@@ -1654,13 +1680,22 @@ export default function App() {
                       }}
                     />
                     {!activeMonth.isClosed && (
-                      <button
-                        onClick={() => { setEnvelopeToEdit(null); setIsEditEnvOpen(true); }}
-                        className="flex items-center gap-2 bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-2xl cursor-pointer hover:bg-slate-700 transition-all self-start md:self-auto shadow-sm"
-                      >
-                        <LucideIcon name="Plus" size={14} />
-                        Nowa koperta
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setIsReorderOpen(true)}
+                          className="flex items-center gap-2 bg-slate-100 text-slate-700 text-xs font-bold px-4 py-2 rounded-2xl cursor-pointer hover:bg-slate-200 transition-all self-start md:self-auto shadow-sm"
+                        >
+                          <LucideIcon name="ArrowUpDown" size={14} />
+                          Zmień kolejność
+                        </button>
+                        <button
+                          onClick={() => { setEnvelopeToEdit(null); setIsEditEnvOpen(true); }}
+                          className="flex items-center gap-2 bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-2xl cursor-pointer hover:bg-slate-700 transition-all self-start md:self-auto shadow-sm"
+                        >
+                          <LucideIcon name="Plus" size={14} />
+                          Nowa koperta
+                        </button>
+                      </div>
                     )}
                   </div>
 
@@ -1792,6 +1827,13 @@ export default function App() {
       <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* ---- MODALS ---- */}
+      <ReorderEnvelopesModal
+        isOpen={isReorderOpen}
+        onClose={() => setIsReorderOpen(false)}
+        envelopes={activeMonth.envelopes}
+        onSave={handleReorderEnvelopes}
+      />
+
       {isEditEnvOpen && (
         <EditEnvelopeModal
           isOpen={isEditEnvOpen}
