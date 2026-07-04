@@ -29,10 +29,7 @@ export default function EnvelopeCard({
   const colorCfg = getColorConfig(envelope.color);
 
   const available = envelope.rollover + envelope.allocated - envelope.spent;
-  const totalBudget = envelope.rollover + envelope.allocated;
-  const availablePct = totalBudget > 0 ? Math.max(0, Math.min(100, (available / totalBudget) * 100)) : 0;
   const isOverspent = available < 0;
-  const isWarning = settings.limitWarnings && availablePct <= 20 && !isOverspent && (envelope.allocated > 0 || envelope.rollover > 0);
 
   const handleDragStart = (e: React.DragEvent) => {
     if (isClosed) {
@@ -99,8 +96,6 @@ export default function EnvelopeCard({
           ? 'border-emerald-500 ring-4 ring-emerald-500/25 scale-[1.04] shadow-lg z-30'
           : isOverspent
           ? 'border-rose-300 shadow-sm'
-          : isWarning
-          ? 'border-amber-200 shadow-sm'
           : `${colorCfg.border} shadow-sm`
       } ${colorCfg.bgLight} ${
         !isClosed ? 'cursor-pointer hover:scale-[1.02] hover:shadow-lg' : ''

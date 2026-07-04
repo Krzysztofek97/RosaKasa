@@ -1114,7 +1114,6 @@ export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, 
   const [showDecimals, setShowDecimals] = useState(false);
   const [enableRollover, setEnableRollover] = useState(true);
   const [hideClosedMonths, setHideClosedMonths] = useState(false);
-  const [limitWarnings, setLimitWarnings] = useState(true);
 
   useEffect(() => {
     if (settings) {
@@ -1122,7 +1121,6 @@ export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, 
       setShowDecimals(settings.showDecimals);
       setEnableRollover(settings.enableRollover);
       setHideClosedMonths(settings.hideClosedMonths);
-      setLimitWarnings(settings.limitWarnings);
     }
   }, [settings, isOpen]);
 
@@ -1130,7 +1128,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ currency, showDecimals, enableRollover, hideClosedMonths, limitWarnings });
+    onSave({ currency, showDecimals, enableRollover, hideClosedMonths });
     onClose();
   };
 
@@ -1196,13 +1194,6 @@ export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, 
               <div className="border-t border-slate-100 pt-3">
                 <ToggleRow label="Pokazuj grosze / centy" desc="Włącz wyświetlanie miejsc po przecinku" value={showDecimals} onChange={() => setShowDecimals(!showDecimals)} id="toggle-settings-decimals" />
               </div>
-            </div>
-          </div>
-
-          <div className="space-y-2.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">Zachowanie Budżetu</label>
-            <div className="bg-white/60 border border-slate-200/60 rounded-2xl p-4 space-y-4 shadow-sm">
-               <ToggleRow label="Ostrzeżenia o niskim saldzie" desc="Wyróżniaj koperty bliskie wyczerpania (<20% środków)" value={limitWarnings} onChange={() => setLimitWarnings(!limitWarnings)} id="toggle-settings-warnings" />
             </div>
           </div>
 

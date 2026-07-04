@@ -510,7 +510,6 @@ export default function App() {
       showDecimals: false,
       enableRollover: true,
       hideClosedMonths: false,
-      limitWarnings: true,
     };
     try {
       const saved = localStorage.getItem('rosakasa_settings');
@@ -1424,10 +1423,14 @@ export default function App() {
     });
     
     saveToStorage(updatedMonths);
-    if (amount) {
+    if (amount && rolloverEnvelopeIds && rolloverEnvelopeIds.length > 0) {
+      showAlert('Ustawienia zapisane', `Auto-przelew (${formatCurrency(amount)}) oraz przenoszenie nadwyżek aktywne.`);
+    } else if (amount) {
       showAlert('Auto-przelew ustawiony', `Będzie przesyłać ${formatCurrency(amount)} w dniu ${day} każdego miesiąca.`);
+    } else if (rolloverEnvelopeIds && rolloverEnvelopeIds.length > 0) {
+      showAlert('Przenoszenie nadwyżek aktywne', `Nadwyżki z wybranych kopert zasilą cel.`);
     } else {
-      showAlert('Auto-przelew wyłączony', `Przelew dla celu ${activeGoal.name} został anulowany.`);
+      showAlert('Zasilanie wyłączone', `Automatyczne zasilanie dla celu ${activeGoal.name} zostało anulowane.`);
     }
   };
 

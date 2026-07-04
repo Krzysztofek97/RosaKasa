@@ -70,7 +70,6 @@ export interface AppSettings {
   showDecimals: boolean;
   enableRollover: boolean;
   hideClosedMonths: boolean;
-  limitWarnings: boolean;
 }
 
 export interface BudgetAccount {

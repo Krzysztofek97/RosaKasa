@@ -224,7 +224,7 @@ export default function SavingGoalCard({
         {linkedEnvelopes.length > 0 && !isAutoSetupOpen && (
            <div className="mt-2 flex flex-wrap gap-1.5">
              <span className="text-[10px] text-slate-500 font-medium flex items-center">
-               <LucideIcon name="ArrowRight" size={10} className="mr-1 inline-block" /> Rollover z:
+               <LucideIcon name="ArrowRight" size={10} className="mr-1 inline-block" /> Nadwyżki z:
              </span>
              {linkedEnvelopes.map(e => (
                <span key={e.id} className="text-[10px] bg-white/40 px-1.5 py-0.5 rounded-md border border-white/60 text-slate-700 flex items-center gap-1">
