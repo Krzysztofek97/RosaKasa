@@ -114,21 +114,21 @@ export default function SummaryCards({
       sub: freeFundsRollover > 0 ? formatCurrency(freeFundsRollover) : null,
       icon: 'Vault',
       draggable: isDraggable,
-      accent: 'bg-white/10 hover:bg-white/15 border-white/10',
-      iconClass: 'text-white',
-      labelClass: 'text-white/50',
-      valueClass: 'text-white',
+      accent: 'bg-slate-100 hover:bg-slate-200 border-slate-200',
+      iconClass: 'text-slate-600',
+      labelClass: 'text-slate-400',
+      valueClass: 'text-slate-800',
     },
     {
       label: 'Koperty',
       value: totalEnvelopeFunds,
       sub: null,
-      icon: 'Mail',
+      icon: 'Inbox',
       draggable: false,
-      accent: 'bg-amber-500/10 border-amber-500/20',
-      iconClass: 'text-amber-300',
-      labelClass: 'text-amber-300/60',
-      valueClass: 'text-amber-200',
+      accent: 'bg-amber-50 border-amber-200',
+      iconClass: 'text-amber-500',
+      labelClass: 'text-amber-400',
+      valueClass: 'text-amber-700',
     },
     {
       label: 'Oszczędności',
@@ -136,10 +136,10 @@ export default function SummaryCards({
       sub: null,
       icon: 'PiggyBank',
       draggable: false,
-      accent: 'bg-teal-500/10 border-teal-500/20',
-      iconClass: 'text-teal-300',
-      labelClass: 'text-teal-300/60',
-      valueClass: 'text-teal-200',
+      accent: 'bg-teal-50 border-teal-200',
+      iconClass: 'text-teal-500',
+      labelClass: 'text-teal-400',
+      valueClass: 'text-teal-700',
     },
   ];
 
@@ -151,25 +151,24 @@ export default function SummaryCards({
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={`relative overflow-hidden rounded-2xl p-4 text-white shadow-lg w-full sm:w-auto border transition-all duration-300 ${
+      className={`relative overflow-hidden rounded-2xl p-4 shadow-sm w-full sm:w-auto border transition-all duration-300 bg-white ${
         isDragOver
-          ? 'border-emerald-500 ring-4 ring-emerald-500/25 scale-[1.01] z-30'
-          : 'border-slate-700/60'
+          ? 'border-emerald-400 ring-4 ring-emerald-400/20 scale-[1.01] z-30'
+          : 'border-slate-200'
       }`}
-      style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)' }}
     >
       {/* Dekoracje tła */}
-      <div className="absolute -right-6 -top-6 w-24 h-24 bg-violet-500/10 rounded-full pointer-events-none" />
-      <div className="absolute -left-4 -bottom-6 w-16 h-16 bg-teal-500/8 rounded-full pointer-events-none" />
+      <div className="absolute -right-6 -top-6 w-24 h-24 bg-violet-100 rounded-full pointer-events-none" />
+      <div className="absolute -left-4 -bottom-6 w-16 h-16 bg-teal-50 rounded-full pointer-events-none" />
 
       {/* Nagłówek: Stan konta + przycisk */}
       <div className="relative flex items-start justify-between gap-3 mb-3">
         <div>
           <div className="flex items-center gap-1.5 mb-0.5">
-            <LucideIcon name="Landmark" size={11} className="text-violet-400" />
-            <p className="text-white/40 text-[9px] font-bold uppercase tracking-widest leading-none">Stan konta</p>
+            <LucideIcon name="Landmark" size={11} className="text-violet-500" />
+            <p className="text-slate-400 text-[9px] font-bold uppercase tracking-widest leading-none">Stan konta</p>
           </div>
-          <span className="text-2xl font-black leading-none tracking-tight">
+          <span className="text-2xl font-black leading-none tracking-tight text-slate-800">
             {formatCurrency(totalAccountBalance)}
           </span>
         </div>
@@ -198,7 +197,7 @@ export default function SummaryCards({
             onTouchCancel={chip.draggable ? handleTouchEnd : undefined}
             className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border select-none transition-all duration-200 ${chip.accent} ${
               chip.draggable
-                ? 'cursor-grab active:cursor-grabbing active:scale-95 active:bg-white/20 border-dashed hover:border-white/25'
+                ? 'cursor-grab active:cursor-grabbing active:scale-95 border-dashed hover:border-slate-300'
                 : ''
             }`}
           >
@@ -212,13 +211,10 @@ export default function SummaryCards({
                   {formatCurrency(chip.value)}
                 </span>
                 {chip.sub && (
-                  <span className="text-[8px] text-white/35 font-medium">({chip.sub})</span>
+                  <span className="text-[8px] text-slate-400 font-medium">({chip.sub})</span>
                 )}
               </div>
             </div>
-            {chip.draggable && (
-              <LucideIcon name="GripHorizontal" size={9} className="text-white/25 ml-0.5" />
-            )}
           </div>
         ))}
       </div>
