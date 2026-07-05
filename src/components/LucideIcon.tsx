@@ -127,7 +127,11 @@ import {
   FolderOpen,
   LogOut,
   ArrowUpDown,
-  GripVertical
+  GripVertical,
+  Vault,
+  Inbox,
+  Mail,
+  MailOpen
 } from 'lucide-react';
 
 interface LucideIconProps {
@@ -423,9 +427,17 @@ export default function LucideIcon({ name, className = '', size }: LucideIconPro
     case 'gripvertical':
     case 'grip-vertical':
       return <GripVertical {...iconProps} />;
-    default:
-      // Fallback
-      return <Wallet {...iconProps} />;
+    case 'vault':
+      return <Vault {...iconProps} />;
+    case 'inbox':
+      return <Inbox {...iconProps} />;
+    case 'mail':
+      return <Mail {...iconProps} />;
+    case 'mailopen':
+    case 'mail-open':
+      return <MailOpen {...iconProps} />;
+    case 'landmark':
+      return <Landmark {...iconProps} />;
   }
 }
 export type { LucideIconProps };
