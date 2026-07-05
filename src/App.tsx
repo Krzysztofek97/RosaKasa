@@ -1630,6 +1630,12 @@ export default function App() {
 
   const totalAllocated = activeMonth.envelopes.reduce((sum, e) => sum + e.allocated, 0);
   const totalSpent = activeMonth.envelopes.reduce((sum, e) => sum + e.spent, 0);
+  // Łączny stan kopert: available = rollover + allocated - spent (wszystkie aktywne)
+  const totalEnvelopeFunds = activeMonth.envelopes
+    .filter(e => !e.isArchived)
+    .reduce((sum, e) => sum + Math.max(0, (e.available ?? (e.rollover + e.allocated - e.spent))), 0);
+  // Łączny stan celów oszczędnościowych
+  const totalSavings = activeMonth.savingGoals.reduce((sum, g) => sum + g.current, 0);
 
   // ---- JSX ----
   return (
@@ -1673,6 +1679,8 @@ export default function App() {
                       totalAllocated={totalAllocated}
                       totalSpent={totalSpent}
                       totalIncome={totalIncome}
+                      totalEnvelopeFunds={totalEnvelopeFunds}
+                      totalSavings={totalSavings}
                       envelopes={activeMonth.envelopes.filter(e => !e.isArchived)}
                       onAddIncome={() => setIsAddIncomeOpen(true)}
                       isClosed={activeMonth.isClosed}
