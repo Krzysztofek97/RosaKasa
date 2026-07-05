@@ -42,7 +42,7 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
         expenseNeg: -mExp, // Wykorzystane do rysowania wykresu pod osią 0
         savings: mSav,
         savingsNeg: -mSav, // Stackowane pod osią 0 obok wydatków
-        balance: mInc - mExp,
+        balance: mInc - mExp - mSav,
         hasActivity: mInc > 0 || mExp > 0 || mSav !== 0
       };
     });
