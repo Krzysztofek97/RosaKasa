@@ -39,6 +39,7 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
         expense: mExp,
         expenseNeg: -mExp, // Wykorzystane do rysowania wykresu pod osią 0
         savings: mSav,
+        savingsNeg: -mSav, // Stackowane pod osią 0 obok wydatków
         balance: mInc - mExp,
         hasActivity: mInc > 0 || mExp > 0 || mSav !== 0
       };
@@ -129,7 +130,7 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
               formatter={(value: any, name: string) => {
                 if (name === 'Wydatek' || name === 'expenseNeg') return [formatCurrency(Math.abs(Number(value))), 'Wydatek'];
                 if (name === 'Przychód' || name === 'income') return [formatCurrency(Number(value)), 'Przychód'];
-                if (name === 'Oszczędności' || name === 'savings') return [formatCurrency(Number(value)), 'Oszczędności'];
+                if (name === 'Oszczędności' || name === 'savings' || name === 'savingsNeg') return [formatCurrency(Math.abs(Number(value))), 'Oszczędności'];
                 if (name === 'Bilans' || name === 'balance') return [formatCurrency(Number(value)), 'Bilans'];
                 return [value, name];
               }}
@@ -138,10 +139,10 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
             
             {/* Słupki stacked w jednym paśmie (na i pod osią zero) */}
             <Bar dataKey="income" name="Przychód" fill="#34d399" radius={[4, 4, 0, 0]} maxBarSize={32} stackId="a" />
-            <Bar dataKey="expenseNeg" name="Wydatek" fill="#fb7185" radius={[0, 0, 4, 4]} maxBarSize={32} stackId="a" />
+            <Bar dataKey="expenseNeg" name="Wydatek" fill="#fb7185" radius={[0, 0, 0, 0]} maxBarSize={32} stackId="a" />
             
-            {/* Oszczędności obok przychodu/wydatku */}
-            <Bar dataKey="savings" name="Oszczędności" fill="#60a5fa" radius={[4, 4, 0, 0]} maxBarSize={32} />
+            {/* Oszczędności złączone z wydatkami */}
+            <Bar dataKey="savingsNeg" name="Oszczędności" fill="#60a5fa" radius={[0, 0, 4, 4]} maxBarSize={32} stackId="a" />
             
             {/* Liniowy trend bilansu z "kółkami" na wierzchołkach */}
             <Line 
@@ -158,7 +159,7 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
               iconType="circle" 
               iconSize={8} 
               wrapperStyle={{ fontSize: '11px', fontWeight: 'bold', paddingTop: '20px' }} 
-              formatter={(value) => value === 'expenseNeg' ? 'Wydatek' : value}
+              formatter={(value) => (value === 'expenseNeg' || value === 'Wydatek') ? 'Wydatek' : (value === 'savingsNeg' || value === 'Oszczędności' ? 'Oszczędności' : value)}
             />
           </ComposedChart>
         </ResponsiveContainer>

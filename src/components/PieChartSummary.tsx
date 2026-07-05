@@ -45,24 +45,39 @@ export default function PieChartSummary({ months, envelopes, savingGoals = [], g
   const chartData = useMemo(() => {
     const expenses = activeTxList.filter(t => t.type === 'expense' || (t.type === 'saving_transfer' && !t.isWithdrawal));
     
-    const aggregated = new Map<string, { amount: number; originalName: string }>();
+    const aggregated = new Map<string, { amount: number; originalName: string; isSavingGroup: boolean }>();
     expenses.forEach(t => {
-      const envelopeName = t.envelopeName || 'Nieznana';
-      const key = envelopeName.toLowerCase().trim();
-      const current = aggregated.get(key) || { amount: 0, originalName: envelopeName };
-      aggregated.set(key, { amount: current.amount + t.amount, originalName: envelopeName });
+      let envelopeName = t.envelopeName || 'Nieznana';
+      let key = envelopeName.toLowerCase().trim();
+      
+      if (t.type === 'saving_transfer') {
+        envelopeName = 'Oszczędności';
+        key = 'oszczędności_grupa';
+      }
+      
+      const current = aggregated.get(key) || { amount: 0, originalName: envelopeName, isSavingGroup: false };
+      aggregated.set(key, { amount: current.amount + t.amount, originalName: envelopeName, isSavingGroup: current.isSavingGroup || t.type === 'saving_transfer' });
     });
 
     const data = Array.from(aggregated.entries()).map(([key, info]) => {
+      if (info.isSavingGroup) {
+        return {
+          name: 'Oszczędności',
+          value: info.amount,
+          colorClass: 'blue',
+          envKey: 'oszczędności_grupa',
+          icon: 'PiggyBank',
+        };
+      }
+
       const env = envelopes.find(e => e.name.toLowerCase().trim() === key);
-      const goal = savingGoals.find(g => g.name.toLowerCase().trim() === key);
       
       return {
-        name: env?.name || goal?.name || info.originalName,
+        name: env?.name || info.originalName,
         value: info.amount,
-        colorClass: env?.color || goal?.color || 'slate',
+        colorClass: env?.color || 'slate',
         envKey: key,
-        icon: env?.icon || goal?.icon || 'Folder',
+        icon: env?.icon || 'Folder',
       };
     });
 
@@ -76,8 +91,15 @@ export default function PieChartSummary({ months, envelopes, savingGoals = [], g
 
   const activeTransactions = useMemo(() => {
     if (!selectedData) return [];
+    
+    if (selectedData.envKey === 'oszczędności_grupa') {
+      return activeTxList
+        .filter(t => t.type === 'saving_transfer' && !t.isWithdrawal)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    }
+
     return activeTxList
-      .filter(t => (t.type === 'expense' || (t.type === 'saving_transfer' && !t.isWithdrawal)) && (t.envelopeName || 'Nieznana').toLowerCase().trim() === selectedData.envKey)
+      .filter(t => t.type === 'expense' && (t.envelopeName || 'Nieznana').toLowerCase().trim() === selectedData.envKey)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [activeTxList, selectedData]);
 
