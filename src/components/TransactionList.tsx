@@ -303,13 +303,13 @@ export default function TransactionList({
                         <div className="flex items-center gap-3 shrink-0">
                           <div className="text-right font-mono">
                             <p className={`text-xs font-extrabold ${
-                              t.type === 'expense' || t.isWithdrawal 
+                              t.type === 'expense'
                                 ? 'text-rose-600' 
                                 : t.type === 'income' 
                                   ? 'text-emerald-600' 
                                   : 'text-amber-600'
                             }`}>
-                              {t.type === 'expense' || t.isWithdrawal ? '-' : '+'}{formatCurrency(t.amount)}
+                              {t.type === 'expense' || (t.type === 'saving_transfer' && !t.isWithdrawal) ? '-' : '+'}{formatCurrency(t.amount)}
                             </p>
                             <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider mt-0.5">{badge.label}</p>
                           </div>

@@ -19,6 +19,7 @@ import LucideIcon from './components/LucideIcon';
 import PlannedTransactionsBanner from './components/PlannedTransactionsBanner';
 import {
   EditEnvelopeModal,
+  EnvelopeHistoryModal,
   AddSavingGoalModal,
   AddExpenseModal,
   ChangelogModal,
@@ -496,8 +497,8 @@ export default function App() {
   const [transferSourceEnvelope, setTransferSourceEnvelope] = useState<Envelope | null>(null);
   const [transferTargetEnvelope, setTransferTargetEnvelope] = useState<Envelope | null>(null);
   const [actionsEnvelope, setActionsEnvelope] = useState<Envelope | null>(null);
-
-
+  const [isHistoryEnvOpen, setIsHistoryEnvOpen] = useState(false);
+  const [envelopeForHistory, setEnvelopeForHistory] = useState<Envelope | null>(null);
   // Stan przeciągania dotykowego na urządzeniach mobilnych
   const [touchDragging, setTouchDragging] = useState(false);
   const [touchDragPos, setTouchDragPos] = useState<{ x: number; y: number } | null>(null);
@@ -1853,6 +1854,15 @@ export default function App() {
         />
       )}
 
+      {isHistoryEnvOpen && envelopeForHistory && (
+        <EnvelopeHistoryModal
+          isOpen={isHistoryEnvOpen}
+          onClose={() => setIsHistoryEnvOpen(false)}
+          envelope={envelopeForHistory}
+          transactions={activeMonth.transactions}
+        />
+      )}
+
       {isAddGoalOpen && (
         <AddSavingGoalModal
           isOpen={isAddGoalOpen}
@@ -1927,6 +1937,7 @@ export default function App() {
           onAddExpense={(e) => { setEnvelopeForExpense(e); setIsAddExpenseOpen(true); }}
           onAllocate={(e) => setAllocateEnvelope({ envelope: e, initialMode: 'allocate' })}
           onEdit={(e) => { setEnvelopeToEdit(e); setIsEditEnvOpen(true); }}
+          onHistory={(e) => { setEnvelopeForHistory(e); setIsHistoryEnvOpen(true); }}
           onDelete={handleDeleteEnvelope}
         />
       )}

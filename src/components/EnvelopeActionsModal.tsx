@@ -12,6 +12,7 @@ interface EnvelopeActionsModalProps {
   onAddExpense: (envelope: Envelope) => void;
   onAllocate: (envelope: Envelope) => void;
   onEdit: (envelope: Envelope) => void;
+  onHistory: (envelope: Envelope) => void;
   onDelete?: (envelopeId: string) => void;
 }
 
@@ -22,6 +23,7 @@ export default function EnvelopeActionsModal({
   onAddExpense,
   onAllocate,
   onEdit,
+  onHistory,
 }: EnvelopeActionsModalProps) {
   if (!isOpen || !envelope) return null;
 
@@ -102,7 +104,25 @@ export default function EnvelopeActionsModal({
             <LucideIcon name="ChevronRight" size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
           </button>
 
-          {/* 3. Edytuj kopertę */}
+          {/* 3. Historia transakcji */}
+          <button
+            onClick={() => {
+              onHistory(envelope);
+              onClose();
+            }}
+            className="w-full flex items-center gap-4 p-3 rounded-2xl bg-white/70 hover:bg-amber-50 border border-white/60 hover:border-amber-100 transition-all duration-200 cursor-pointer group shadow-sm text-left font-sans"
+          >
+            <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-600 group-hover:scale-110 transition-transform">
+              <LucideIcon name="History" size={18} />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs font-bold text-slate-800">Historia transakcji</p>
+              <p className="text-[10px] text-slate-500 font-medium mt-0.5">Zobacz listę wydatków i wpływów tej koperty</p>
+            </div>
+            <LucideIcon name="ChevronRight" size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+          </button>
+
+          {/* 4. Edytuj kopertę */}
           <button
             onClick={() => {
               onEdit(envelope);
