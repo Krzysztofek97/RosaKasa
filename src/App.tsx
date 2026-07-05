@@ -1318,6 +1318,7 @@ export default function App() {
         type: 'saving_transfer',
         savingGoalId: goalId,
         isWithdrawal: diff < 0,
+        isSystem: true
       };
 
       const finalMonths = updatedMonths.map(m => {

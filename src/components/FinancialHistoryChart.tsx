@@ -24,9 +24,11 @@ export default function FinancialHistoryChart({ months, selectedMonthId }: Finan
       let mExp = 0;
       let mSav = 0;
       (m.transactions || []).forEach(t => {
+        const isSystemTx = t.isSystem || t.description.startsWith('Inicjalizacja celu') || t.description.startsWith('Korekta salda celu');
+        
         if (t.type === 'income') mInc += t.amount;
         if (t.type === 'expense') mExp += t.amount;
-        if (t.type === 'saving_transfer') {
+        if (t.type === 'saving_transfer' && !isSystemTx) {
           if (!t.isWithdrawal) mSav += t.amount;
           else mSav -= t.amount;
         }

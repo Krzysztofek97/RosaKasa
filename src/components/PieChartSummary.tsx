@@ -43,7 +43,10 @@ export default function PieChartSummary({ months, envelopes, savingGoals = [], g
   }, [currentYearMonths, localScope]);
 
   const chartData = useMemo(() => {
-    const expenses = activeTxList.filter(t => t.type === 'expense' || (t.type === 'saving_transfer' && !t.isWithdrawal));
+    const expenses = activeTxList.filter(t => {
+      if (t.isSystem || t.description.startsWith('Inicjalizacja celu') || t.description.startsWith('Korekta salda celu')) return false;
+      return t.type === 'expense' || (t.type === 'saving_transfer' && !t.isWithdrawal);
+    });
     
     const aggregated = new Map<string, { amount: number; originalName: string; isSavingGroup: boolean }>();
     expenses.forEach(t => {
@@ -94,7 +97,7 @@ export default function PieChartSummary({ months, envelopes, savingGoals = [], g
     
     if (selectedData.envKey === 'oszczędności_grupa') {
       return activeTxList
-        .filter(t => t.type === 'saving_transfer' && !t.isWithdrawal)
+        .filter(t => t.type === 'saving_transfer' && !t.isWithdrawal && !t.isSystem && !t.description.startsWith('Inicjalizacja celu') && !t.description.startsWith('Korekta salda celu'))
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     }
 

@@ -35,6 +35,7 @@ export interface Transaction {
   type: 'expense' | 'income' | 'saving_transfer' | 'rollover';
   savingGoalId?: string;              // Powiązany cel oszczędnościowy
   isWithdrawal?: boolean;             // Czy wypłata z celu
+  isSystem?: boolean;                 // Czy transakcja wygenerowana automatycznie (np. inicjalizacja)
 }
 
 export type RecurringFrequency = 'one_time' | 'weekly' | 'biweekly' | 'monthly' | 'yearly';
