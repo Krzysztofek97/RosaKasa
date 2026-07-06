@@ -2021,7 +2021,7 @@ function DesktopSidebar({ activeTab, setActiveTab, onOpenChangelog, onOpenSettin
   return (
     <aside className="hidden lg:flex flex-col fixed left-0 top-0 bottom-0 w-56 bg-white border-r border-slate-100 z-30 py-6 px-3">
       <div className="px-3 mb-6 flex justify-center">
-        <img src="/logo_cropped.png" alt="RosaKasa" className="w-full max-w-[205px] h-auto object-contain transition-all duration-300" />
+        <img src="/logo_cropped.png" alt="RosaKasa" className="w-full max-w-[240px] h-auto object-contain transition-all duration-300" />
       </div>
 
       <nav className="flex-1 space-y-1">

@@ -90,7 +90,7 @@ export default function Header({
       <div className="flex items-center gap-2 md:gap-3 justify-between md:justify-start">
         <div className="flex items-center gap-2 md:gap-3">
           <div className="flex lg:hidden items-center">
-            <img src="/logo_simple.png" alt="RosaKasa logo" className="h-12 md:h-14 w-auto object-contain transition-transform duration-300 hover:scale-102" />
+            <img src="/logo_simple.png" alt="RosaKasa logo" className="h-14 md:h-16 w-auto object-contain transition-transform duration-300 hover:scale-102" />
           </div>
           
           {budgets && budgets.length > 0 && activeBudgetId && (
