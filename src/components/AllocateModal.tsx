@@ -22,10 +22,11 @@ export default function AllocateModal({ isOpen, onClose, envelope, freeFunds, on
   if (!isOpen) return null;
 
   const colorCfg = getColorConfig(envelope.color);
-  const numAmount = parseFloat(amount) || 0;
-  const maxAllocate = freeFunds;
-  const maxWithdraw = Math.max(0, envelope.rollover + envelope.allocated - envelope.spent);
-  const available = envelope.rollover + envelope.allocated - envelope.spent;
+  const round2 = (n: number) => Math.round(n * 100) / 100;
+  const numAmount = round2(parseFloat(amount) || 0);
+  const maxAllocate = round2(freeFunds);
+  const maxWithdraw = round2(Math.max(0, envelope.rollover + envelope.allocated - envelope.spent));
+  const available = round2(envelope.rollover + envelope.allocated - envelope.spent);
 
   const isValid = numAmount > 0 && (
     mode === 'allocate' ? numAmount <= maxAllocate : numAmount <= maxWithdraw
