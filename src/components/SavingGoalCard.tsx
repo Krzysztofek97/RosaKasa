@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { SavingGoal } from '../types';
+import { SavingGoal, SavingGoalStorageType } from '../types';
 import { formatCurrency, calculatePercentage } from '../utils';
 import LucideIcon from './LucideIcon';
 
@@ -23,6 +23,13 @@ const goalThemes: Record<string, { ring: string, border: string, bg: string, tex
   rose: { ring: 'ring-rose-500/15', border: 'border-rose-500/30', bg: 'bg-rose-500', text: 'text-rose-700', textLight: 'text-rose-950', progressBg: 'bg-rose-100' },
   stone: { ring: 'ring-stone-500/15', border: 'border-stone-500/30', bg: 'bg-stone-500', text: 'text-stone-700', textLight: 'text-stone-950', progressBg: 'bg-stone-100' },
   zinc: { ring: 'ring-zinc-500/15', border: 'border-zinc-500/30', bg: 'bg-zinc-500', text: 'text-zinc-700', textLight: 'text-zinc-950', progressBg: 'bg-zinc-100' }
+};
+
+const STORAGE_LABELS: Record<SavingGoalStorageType, { icon: string; label: string }> = {
+  shared_account: { icon: 'Building2', label: 'Wspólne konto' },
+  own_account:    { icon: 'CreditCard', label: 'Osobne konto' },
+  cash:           { icon: 'Banknote',   label: 'Gotówka' },
+  other:          { icon: 'Box',        label: 'Inne' },
 };
 
 interface SavingGoalCardProps {
@@ -133,6 +140,18 @@ export default function SavingGoalCard({
             <p className="text-[11px] text-slate-500 font-sans mt-0.5 font-medium">
               Cel oszczędnościowy
             </p>
+            {/* Badge lokalizacji */}
+            {goal.storageType && (() => {
+              const sl = STORAGE_LABELS[goal.storageType];
+              return (
+                <div className="flex items-center gap-1 mt-1">
+                  <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-white/60 border border-white/70 text-slate-600`}>
+                    <LucideIcon name={sl.icon} size={9} />
+                    {goal.storageNote ? goal.storageNote : sl.label}
+                  </span>
+                </div>
+              );
+            })()}
           </div>
         </div>
 

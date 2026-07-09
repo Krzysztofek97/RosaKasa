@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Envelope, SavingGoal, BudgetMonth, AppSettings, Transaction } from '../types';
+import { Envelope, SavingGoal, SavingGoalStorageType, BudgetMonth, AppSettings, Transaction } from '../types';
 import { formatCurrency } from '../utils';
 import { AVAILABLE_COLORS, getColorConfig } from '../data';
 import LucideIcon from './LucideIcon';
@@ -317,6 +317,8 @@ export function AddSavingGoalModal({ isOpen, onClose, onSave, goal = null, onDel
   const [initialSaved, setInitialSaved] = useState('');
   const [icon, setIcon] = useState('PiggyBank');
   const [color, setColor] = useState('indigo');
+  const [storageType, setStorageType] = useState<SavingGoalStorageType | undefined>(undefined);
+  const [storageNote, setStorageNote] = useState('');
 
   useEffect(() => {
     if (goal) {
@@ -325,12 +327,16 @@ export function AddSavingGoalModal({ isOpen, onClose, onSave, goal = null, onDel
       setInitialSaved(goal.current.toString());
       setIcon(goal.icon || 'PiggyBank');
       setColor(goal.color || 'indigo');
+      setStorageType(goal.storageType);
+      setStorageNote(goal.storageNote || '');
     } else {
       setName('');
       setTarget('');
       setInitialSaved('');
       setIcon('PiggyBank');
       setColor('indigo');
+      setStorageType(undefined);
+      setStorageNote('');
     }
   }, [goal, isOpen]);
 
@@ -342,7 +348,7 @@ export function AddSavingGoalModal({ isOpen, onClose, onSave, goal = null, onDel
     const currentNum = parseFloat(initialSaved) || 0;
     if (!name.trim()) return;
     if (targetNum !== null && (isNaN(targetNum) || targetNum <= 0)) return;
-    onSave({ id: goal?.id, name: name.trim(), target: targetNum, current: currentNum, icon, color });
+    onSave({ id: goal?.id, name: name.trim(), target: targetNum, current: currentNum, icon, color, storageType, storageNote: storageNote.trim() || undefined });
     onClose();
   };
 
@@ -426,6 +432,47 @@ export function AddSavingGoalModal({ isOpen, onClose, onSave, goal = null, onDel
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Lokalizacja fizyczna środków */}
+          <div>
+            <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Gdzie trzymasz pieniądze?</label>
+            <div className="grid grid-cols-2 gap-2">
+              {([
+                { value: 'shared_account' as SavingGoalStorageType, icon: 'Building2', label: 'Wspólne konto', desc: 'Jedno konto dla wszystkich' },
+                { value: 'own_account' as SavingGoalStorageType, icon: 'CreditCard', label: 'Osobne konto', desc: 'Dedykowane konto' },
+                { value: 'cash' as SavingGoalStorageType, icon: 'Banknote', label: 'Gotówka', desc: 'Skarpetka / portfel' },
+                { value: 'other' as SavingGoalStorageType, icon: 'Box', label: 'Inne', desc: 'Inne miejsce' },
+              ] as const).map(opt => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setStorageType(storageType === opt.value ? undefined : opt.value)}
+                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                    storageType === opt.value
+                      ? 'bg-indigo-50 border-indigo-300 text-indigo-800'
+                      : 'bg-white/40 border-white/60 text-slate-600 hover:bg-white/60'
+                  }`}
+                  id={`btn-goal-storage-${opt.value}`}
+                >
+                  <LucideIcon name={opt.icon} size={15} className={storageType === opt.value ? 'text-indigo-500' : 'text-slate-400'} />
+                  <div>
+                    <p className="text-xs font-bold leading-none">{opt.label}</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">{opt.desc}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+            {storageType && (
+              <input
+                type="text"
+                placeholder={storageType === 'shared_account' ? 'Nazwa banku (opcjonalnie)' : storageType === 'own_account' ? 'Nazwa konta / banku' : 'Opis (opcjonalnie)'}
+                value={storageNote}
+                onChange={e => setStorageNote(e.target.value)}
+                className="mt-2 w-full text-xs bg-white/60 border border-white/60 focus:bg-white focus:border-indigo-400/50 focus:outline-none rounded-xl px-3 py-2 transition-all"
+                id="input-goal-storage-note"
+              />
+            )}
           </div>
 
           <div className="flex justify-between items-center gap-3 pt-3 border-t border-white/50">

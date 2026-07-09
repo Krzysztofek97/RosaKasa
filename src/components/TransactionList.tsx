@@ -39,7 +39,7 @@ export default function TransactionList({
   onSelectMonth,
 }: TransactionListProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState<'all' | 'expense' | 'income' | 'saving_transfer'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'expense' | 'income' | 'saving_transfer' | 'interest'>('all');
   const [activeSection, setActiveSection] = useState<'history' | 'planned'>('history');
   
   const [isMonthOpen, setIsMonthOpen] = useState(false);
@@ -96,6 +96,8 @@ export default function TransactionList({
         return { label: 'Oszczędności', bg: 'bg-amber-500/10 text-amber-700 border-amber-500/25', icon: 'PiggyBank', iconColor: 'text-amber-600' };
       case 'income':
         return { label: 'Wpływy', bg: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/25', icon: 'TrendingUp', iconColor: 'text-emerald-600' };
+      case 'interest':
+        return { label: 'Odsetki 🌱', bg: 'bg-teal-500/10 text-teal-700 border-teal-500/25', icon: 'Sprout', iconColor: 'text-teal-600' };
       default:
         return { label: 'Inny', bg: 'bg-slate-500/10 text-slate-700 border-slate-500/25', icon: 'CreditCard', iconColor: 'text-slate-600' };
     }

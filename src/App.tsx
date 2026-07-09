@@ -31,6 +31,7 @@ import AllocateModal from './components/AllocateModal';
 import EnvelopeActionsModal from './components/EnvelopeActionsModal';
 import TransferModal from './components/TransferModal';
 import ReorderEnvelopesModal from './components/ReorderEnvelopesModal';
+import InterestModal from './components/InterestModal';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
@@ -486,6 +487,7 @@ export default function App() {
   const [envelopeToEdit, setEnvelopeToEdit] = useState<Envelope | null>(null);
   const [goalToEdit, setGoalToEdit] = useState<SavingGoal | null>(null);
   const [isAddGoalOpen, setIsAddGoalOpen] = useState(false);
+  const [isInterestModalOpen, setIsInterestModalOpen] = useState(false);
   const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
   const [envelopeForExpense, setEnvelopeForExpense] = useState<Envelope | null>(null);
   const [isAddIncomeOpen, setIsAddIncomeOpen] = useState(false);
@@ -1495,6 +1497,40 @@ export default function App() {
     saveToStorage(updatedMonths);
   };
 
+  const handleDistributeInterest = (entries: { goalId: string; amount: number }[]) => {
+    const today = new Date().toISOString().split('T')[0];
+    const updatedMonths = months.map(m => {
+      if (m.id !== selectedMonthId) return m;
+      let updatedGoals = [...m.savingGoals];
+      const newTransactions: Transaction[] = [];
+      for (const entry of entries) {
+        const goal = updatedGoals.find(g => g.id === entry.goalId);
+        if (!goal || entry.amount <= 0) continue;
+        updatedGoals = updatedGoals.map(g =>
+          g.id === entry.goalId ? { ...g, current: g.current + entry.amount } : g
+        );
+        newTransactions.push({
+          id: genId('tx-interest'),
+          envelopeId: 'free_funds',
+          envelopeName: goal.name,
+          amount: entry.amount,
+          description: `Odsetki: ${goal.name}`,
+          date: today,
+          type: 'interest',
+          savingGoalId: entry.goalId,
+          isWithdrawal: false,
+        });
+      }
+      return {
+        ...m,
+        savingGoals: updatedGoals,
+        transactions: [...newTransactions, ...m.transactions],
+      };
+    });
+    saveToStorage(updatedMonths);
+    showAlert('Odsetki dodane', `Zysk z konta oszczędnościowego został zaksięgowany dla ${entries.length} ${entries.length === 1 ? 'celu' : 'celów'}.`);
+  };
+
   // ---- TRANSACTION HANDLERS ----
 
   const handleSaveIncome = (targetId: string, amount: number, description: string) => {
@@ -1756,13 +1792,24 @@ export default function App() {
                 <motion.div key="savings" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-bold text-slate-800">Cele oszczędnościowe</h2>
-                    <button
-                      onClick={() => { setGoalToEdit(null); setIsAddGoalOpen(true); }}
-                      className="flex items-center gap-2 bg-teal-600 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer hover:bg-teal-700 transition-all"
-                    >
-                      <LucideIcon name="Plus" size={14} />
-                      Nowy cel
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setIsInterestModalOpen(true)}
+                        className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold px-3 py-2 rounded-xl cursor-pointer hover:bg-emerald-100 transition-all"
+                        title="Dodaj odsetki z konta oszczędnościowego"
+                        id="btn-open-interest-modal"
+                      >
+                        <LucideIcon name="TrendingUp" size={13} />
+                        Odsetki
+                      </button>
+                      <button
+                        onClick={() => { setGoalToEdit(null); setIsAddGoalOpen(true); }}
+                        className="flex items-center gap-2 bg-teal-600 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer hover:bg-teal-700 transition-all"
+                      >
+                        <LucideIcon name="Plus" size={14} />
+                        Nowy cel
+                      </button>
+                    </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {activeMonth.savingGoals.length === 0 ? (
@@ -1953,6 +2000,13 @@ export default function App() {
       {isChangelogOpen && (
         <ChangelogModal isOpen={isChangelogOpen} onClose={() => setIsChangelogOpen(false)} />
       )}
+
+      <InterestModal
+        isOpen={isInterestModalOpen}
+        onClose={() => setIsInterestModalOpen(false)}
+        onSave={handleDistributeInterest}
+        goals={activeMonth.savingGoals}
+      />
 
       {isSettingsOpen && (
         <SettingsModal

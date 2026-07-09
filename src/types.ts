@@ -14,6 +14,8 @@ export interface Envelope {
   available?: number;     // rollover + allocated - spent
 }
 
+export type SavingGoalStorageType = 'shared_account' | 'own_account' | 'cash' | 'other';
+
 export interface SavingGoal {
   id: string;
   name: string;
@@ -23,6 +25,8 @@ export interface SavingGoal {
   color?: string;
   autoTransferAmount?: number;
   autoTransferDay?: number; // 1-31
+  storageType?: SavingGoalStorageType; // Gdzie fizycznie trzymane są środki
+  storageNote?: string;                // Opcjonalny opis (np. "PKO BP Misja Oszczędzanie")
 }
 
 export interface Transaction {
@@ -32,7 +36,7 @@ export interface Transaction {
   amount: number;
   description: string;
   date: string;           // format YYYY-MM-DD
-  type: 'expense' | 'income' | 'saving_transfer' | 'rollover';
+  type: 'expense' | 'income' | 'saving_transfer' | 'rollover' | 'interest';
   savingGoalId?: string;              // Powiązany cel oszczędnościowy
   isWithdrawal?: boolean;             // Czy wypłata z celu
   isSystem?: boolean;                 // Czy transakcja wygenerowana automatycznie (np. inicjalizacja)
