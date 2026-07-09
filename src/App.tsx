@@ -1279,22 +1279,25 @@ export default function App() {
 
     const currentMonth = months.find(m => m.id === selectedMonthId);
     const existingGoalInCurrent = currentMonth?.savingGoals.find(g => g.id === goalId);
-    const oldCurrent = existingGoalInCurrent ? existingGoalInCurrent.current : 0;
-    const diff = targetCurrent - oldCurrent;
+    const isEdit = !!existingGoalInCurrent;
 
-    const updatedMonths = months.map(m => {
-      const exists = m.savingGoals.some(g => g.id === goalId);
-      if (exists) {
-        return {
-          ...m,
-          savingGoals: m.savingGoals.map(g => {
-            if (g.id !== goalId) return g;
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { current: _current, ...restGoalData } = goalData;
-            return { ...g, ...restGoalData };
-          })
-        };
-      } else {
+    if (isEdit) {
+      // --- EDYCJA: aktualizujemy metadane (nazwa, ikona, kolor, lokalizacja, target itp.)
+      // Saldo (current) ustawiamy bezpośrednio — BEZ ruszania freeFunds
+      const updatedMonths = months.map(m => ({
+        ...m,
+        savingGoals: m.savingGoals.map(g => {
+          if (g.id !== goalId) return g;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { id: _id, ...rest } = goalData;
+          return { ...g, ...rest };
+        })
+      }));
+      saveToStorage(updatedMonths);
+    } else {
+      // --- NOWY CEL: tworzymy we wszystkich miesiącach, opcjonalnie z saldem startowym
+      const diff = targetCurrent; // startowe saldo (od 0)
+      const updatedMonths = months.map(m => {
         const newGoal: SavingGoal = {
           id: goalId,
           name: goalData.name || '',
@@ -1302,44 +1305,42 @@ export default function App() {
           current: m.id === selectedMonthId ? targetCurrent : 0,
           icon: goalData.icon,
           color: goalData.color,
+          storageType: goalData.storageType,
+          storageNote: goalData.storageNote,
         };
         if (goalData.autoTransferAmount !== undefined) newGoal.autoTransferAmount = goalData.autoTransferAmount;
         if (goalData.autoTransferDay !== undefined) newGoal.autoTransferDay = goalData.autoTransferDay;
-
         return {
           ...m,
           savingGoals: [...m.savingGoals, newGoal]
         };
-      }
-    });
-
-    if (diff !== 0) {
-      const isNew = !existingGoalInCurrent;
-      const desc = isNew ? `Inicjalizacja celu: ${goalData.name}` : `Korekta salda celu: ${goalData.name}`;
-      const newTx: Transaction = {
-        id: genId(diff < 0 ? 'tx-save-out' : 'tx-save'),
-        envelopeId: 'free_funds',
-        envelopeName: goalData.name || '',
-        amount: Math.abs(diff),
-        description: desc,
-        date: new Date().toISOString().split('T')[0],
-        type: 'saving_transfer',
-        savingGoalId: goalId,
-        isWithdrawal: diff < 0,
-        isSystem: true
-      };
-
-      const finalMonths = updatedMonths.map(m => {
-        if (m.id !== selectedMonthId) return m;
-        return {
-          ...m,
-          freeFunds: m.freeFunds - diff,
-          transactions: [newTx, ...m.transactions]
-        };
       });
-      saveToStorage(finalMonths);
-    } else {
-      saveToStorage(updatedMonths);
+
+      if (diff !== 0) {
+        const newTx: Transaction = {
+          id: genId('tx-save'),
+          envelopeId: 'free_funds',
+          envelopeName: goalData.name || '',
+          amount: diff,
+          description: `Inicjalizacja celu: ${goalData.name}`,
+          date: new Date().toISOString().split('T')[0],
+          type: 'saving_transfer',
+          savingGoalId: goalId,
+          isWithdrawal: false,
+          isSystem: true
+        };
+        const finalMonths = updatedMonths.map(m => {
+          if (m.id !== selectedMonthId) return m;
+          return {
+            ...m,
+            freeFunds: m.freeFunds - diff,
+            transactions: [newTx, ...m.transactions]
+          };
+        });
+        saveToStorage(finalMonths);
+      } else {
+        saveToStorage(updatedMonths);
+      }
     }
   };
 
