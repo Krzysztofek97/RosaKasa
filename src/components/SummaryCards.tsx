@@ -35,6 +35,7 @@ export default function SummaryCards({
   onTouchDragMove,
   onTouchDragEnd,
   onDropEnvelope,
+  settings,
 }: SummaryCardsProps) {
   const includeSavings = settings?.includeSavingsInTotal ?? true;
   const totalAccountBalance = freeFunds + totalEnvelopeFunds + (includeSavings ? totalSavings : 0);

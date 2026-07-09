@@ -1752,6 +1752,7 @@ export default function App() {
                       totalEnvelopeFunds={totalEnvelopeFunds}
                       totalSavings={totalSavings}
                       envelopes={activeMonth.envelopes.filter(e => !e.isArchived)}
+                      settings={settings}
                       onAddIncome={() => setIsAddIncomeOpen(true)}
                       onCorrectFreeFunds={(newAmount: number) => {
                         const updatedMonths = months.map(m =>
