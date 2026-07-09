@@ -1287,7 +1287,12 @@ export default function App() {
       if (exists) {
         return {
           ...m,
-          savingGoals: m.savingGoals.map(g => g.id === goalId ? { ...g, ...goalData } : g)
+          savingGoals: m.savingGoals.map(g => {
+            if (g.id !== goalId) return g;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { current: _current, ...restGoalData } = goalData;
+            return { ...g, ...restGoalData };
+          })
         };
       } else {
         const newGoal: SavingGoal = {
