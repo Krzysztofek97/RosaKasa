@@ -36,7 +36,7 @@ export interface Transaction {
   amount: number;
   description: string;
   date: string;           // format YYYY-MM-DD
-  type: 'expense' | 'income' | 'saving_transfer' | 'rollover' | 'interest';
+  type: 'expense' | 'income' | 'saving_transfer' | 'rollover' | 'interest' | 'goal_correction';
   savingGoalId?: string;              // Powiązany cel oszczędnościowy
   isWithdrawal?: boolean;             // Czy wypłata z celu
   isSystem?: boolean;                 // Czy transakcja wygenerowana automatycznie (np. inicjalizacja)

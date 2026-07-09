@@ -275,7 +275,10 @@ function healRollovers(monthsList: BudgetMonth[]): BudgetMonth[] {
   const getGoalTransactionsSum = (month: BudgetMonth, goalId: string, goalName: string): number => {
     let sum = 0;
     (month.transactions || []).forEach(t => {
-      if (t.type === 'saving_transfer' && !t.id.startsWith('tx-rollover-')) {
+      const isSavingTransfer = t.type === 'saving_transfer' && !t.id.startsWith('tx-rollover-');
+      const isInterest = t.type === 'interest';
+      const isCorrection = t.type === 'goal_correction';
+      if (isSavingTransfer || isInterest || isCorrection) {
         const matchesGoal = t.savingGoalId === goalId || (t.envelopeName || '').toLowerCase().trim() === goalName.toLowerCase().trim();
         if (matchesGoal) {
           if (t.isWithdrawal) {
@@ -1283,17 +1286,41 @@ export default function App() {
 
     if (isEdit) {
       // --- EDYCJA: aktualizujemy metadane (nazwa, ikona, kolor, lokalizacja, target itp.)
-      // Saldo (current) ustawiamy bezpośrednio — BEZ ruszania freeFunds
+      // Jeśli saldo (current) się zmieniło, wstawiamy transakcję korygującą — BEZ ruszania freeFunds
+      const displayedCurrent = activeMonth.savingGoals.find(g => g.id === goalId)?.current ?? 0;
+      const diff = targetCurrent - displayedCurrent;
+
       const updatedMonths = months.map(m => ({
         ...m,
         savingGoals: m.savingGoals.map(g => {
           if (g.id !== goalId) return g;
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { id: _id, ...rest } = goalData;
-          return { ...g, ...rest };
+          const { id: _id, current: _current, ...metaRest } = goalData;
+          return { ...g, ...metaRest };
         })
       }));
-      saveToStorage(updatedMonths);
+
+      if (diff !== 0) {
+        const corrTx: Transaction = {
+          id: genId('tx-goal-corr'),
+          envelopeId: 'free_funds',
+          envelopeName: goalData.name || '',
+          amount: Math.abs(diff),
+          description: `Korekta salda: ${goalData.name}`,
+          date: new Date().toISOString().split('T')[0],
+          type: 'goal_correction',
+          savingGoalId: goalId,
+          isWithdrawal: diff < 0,
+          isSystem: true,
+        };
+        const withTx = updatedMonths.map(m => {
+          if (m.id !== selectedMonthId) return m;
+          return { ...m, transactions: [corrTx, ...m.transactions] };
+        });
+        saveToStorage(withTx);
+      } else {
+        saveToStorage(updatedMonths);
+      }
     } else {
       // --- NOWY CEL: tworzymy we wszystkich miesiącach, opcjonalnie z saldem startowym
       const diff = targetCurrent; // startowe saldo (od 0)

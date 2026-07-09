@@ -98,6 +98,8 @@ export default function TransactionList({
         return { label: 'Wpływy', bg: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/25', icon: 'TrendingUp', iconColor: 'text-emerald-600' };
       case 'interest':
         return { label: 'Odsetki 🌱', bg: 'bg-teal-500/10 text-teal-700 border-teal-500/25', icon: 'Sprout', iconColor: 'text-teal-600' };
+      case 'goal_correction':
+        return { label: 'Korekta', bg: 'bg-slate-500/10 text-slate-600 border-slate-500/25', icon: 'SlidersHorizontal', iconColor: 'text-slate-500' };
       default:
         return { label: 'Inny', bg: 'bg-slate-500/10 text-slate-700 border-slate-500/25', icon: 'CreditCard', iconColor: 'text-slate-600' };
     }
