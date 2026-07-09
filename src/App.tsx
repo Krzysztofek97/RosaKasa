@@ -516,6 +516,7 @@ export default function App() {
       showDecimals: false,
       enableRollover: true,
       hideClosedMonths: false,
+      includeSavingsInTotal: true,
     };
     try {
       const saved = localStorage.getItem('rosakasa_settings');

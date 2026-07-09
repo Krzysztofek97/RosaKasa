@@ -75,6 +75,7 @@ export interface AppSettings {
   showDecimals: boolean;
   enableRollover: boolean;
   hideClosedMonths: boolean;
+  includeSavingsInTotal?: boolean;
 }
 
 export interface BudgetAccount {

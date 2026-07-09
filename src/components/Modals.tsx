@@ -1240,6 +1240,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, 
   const [showDecimals, setShowDecimals] = useState(false);
   const [enableRollover, setEnableRollover] = useState(true);
   const [hideClosedMonths, setHideClosedMonths] = useState(false);
+  const [includeSavingsInTotal, setIncludeSavingsInTotal] = useState(true);
 
   useEffect(() => {
     if (settings) {
@@ -1247,6 +1248,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, 
       setShowDecimals(settings.showDecimals);
       setEnableRollover(settings.enableRollover);
       setHideClosedMonths(settings.hideClosedMonths);
+      setIncludeSavingsInTotal(settings.includeSavingsInTotal ?? true);
     }
   }, [settings, isOpen]);
 
@@ -1254,7 +1256,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ currency, showDecimals, enableRollover, hideClosedMonths });
+    onSave({ currency, showDecimals, enableRollover, hideClosedMonths, includeSavingsInTotal });
     onClose();
   };
 
@@ -1325,8 +1327,11 @@ export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, 
 
           <div className="space-y-2.5">
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">Wygląd i Filtry</label>
-            <div className="bg-white/60 border border-slate-200/60 rounded-2xl p-4 shadow-sm">
+            <div className="bg-white/60 border border-slate-200/60 rounded-2xl p-4 shadow-sm space-y-4">
               <ToggleRow label="Ukryj zamknięte miesiące" desc="Nie pokazuj zamkniętych miesięcy w selektorze" value={hideClosedMonths} onChange={() => setHideClosedMonths(!hideClosedMonths)} id="toggle-settings-hideclosed" />
+              <div className="border-t border-slate-100 pt-3">
+                <ToggleRow label="Uwzględniaj oszczędności" desc="Sumuj oszczędności ze stanem portfela i kopert w głównym saldzie" value={includeSavingsInTotal} onChange={() => setIncludeSavingsInTotal(!includeSavingsInTotal)} id="toggle-settings-include-savings" />
+              </div>
             </div>
           </div>
 

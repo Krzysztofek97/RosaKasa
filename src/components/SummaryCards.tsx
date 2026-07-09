@@ -36,7 +36,8 @@ export default function SummaryCards({
   onTouchDragEnd,
   onDropEnvelope,
 }: SummaryCardsProps) {
-  const totalAccountBalance = freeFunds + totalEnvelopeFunds + totalSavings;
+  const includeSavings = settings?.includeSavingsInTotal ?? true;
+  const totalAccountBalance = freeFunds + totalEnvelopeFunds + (includeSavings ? totalSavings : 0);
 
   const touchStartPos = useRef<{ x: number; y: number } | null>(null);
   const touchTimer = useRef<NodeJS.Timeout | null>(null);
