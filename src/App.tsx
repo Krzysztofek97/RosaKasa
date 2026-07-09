@@ -1725,6 +1725,12 @@ export default function App() {
                       totalSavings={totalSavings}
                       envelopes={activeMonth.envelopes.filter(e => !e.isArchived)}
                       onAddIncome={() => setIsAddIncomeOpen(true)}
+                      onCorrectFreeFunds={(newAmount: number) => {
+                        const updatedMonths = months.map(m =>
+                          m.id === selectedMonthId ? { ...m, freeFunds: newAmount } : m
+                        );
+                        saveToStorage(updatedMonths);
+                      }}
                       isClosed={activeMonth.isClosed}
                       onTouchDragStart={handleTouchDragStart}
                       onTouchDragMove={handleTouchDragMove}

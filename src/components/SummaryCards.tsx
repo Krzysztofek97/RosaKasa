@@ -15,6 +15,7 @@ interface SummaryCardsProps {
   envelopes: Envelope[];
   settings?: AppSettings;
   onAddIncome?: () => void;
+  onCorrectFreeFunds?: (newAmount: number) => void;
   isClosed?: boolean;
   onTouchDragStart?: (x: number, y: number) => void;
   onTouchDragMove?: (x: number, y: number) => void;
@@ -28,6 +29,7 @@ export default function SummaryCards({
   totalSavings,
   totalEnvelopeFunds,
   onAddIncome,
+  onCorrectFreeFunds,
   isClosed = false,
   onTouchDragStart,
   onTouchDragMove,
@@ -40,6 +42,8 @@ export default function SummaryCards({
   const touchTimer = useRef<NodeJS.Timeout | null>(null);
   const isDragging = useRef<boolean>(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isEditingWallet, setIsEditingWallet] = useState(false);
+  const [walletInput, setWalletInput] = useState('');
 
   // --- Drag & Drop ---
   const handleDragStart = (e: React.DragEvent) => {
@@ -118,6 +122,7 @@ export default function SummaryCards({
       iconClass: 'text-slate-600',
       labelClass: 'text-slate-400',
       valueClass: 'text-slate-800',
+      correctable: !isClosed && !!onCorrectFreeFunds,
     },
     {
       label: 'Koperty',
@@ -129,6 +134,7 @@ export default function SummaryCards({
       iconClass: 'text-amber-500',
       labelClass: 'text-amber-400',
       valueClass: 'text-amber-700',
+      correctable: false,
     },
     {
       label: 'Oszczędności',
@@ -140,6 +146,7 @@ export default function SummaryCards({
       iconClass: 'text-teal-500',
       labelClass: 'text-teal-400',
       valueClass: 'text-teal-700',
+      correctable: false,
     },
   ];
 
@@ -212,9 +219,66 @@ export default function SummaryCards({
                 )}
               </div>
             </div>
+            {chip.correctable && (
+              <button
+                onClick={() => { setIsEditingWallet(v => !v); setWalletInput(String(freeFunds)); }}
+                className="ml-1 p-0.5 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
+                title="Koryguj saldo portfela"
+                id="btn-wallet-correct"
+              >
+                <LucideIcon name="Pencil" size={10} />
+              </button>
+            )}
           </div>
         ))}
       </div>
+
+      {/* Inline korekta portfela */}
+      {isEditingWallet && (
+        <div className="mt-3 pt-3 border-t border-slate-100">
+          <p className="text-[10px] text-slate-500 font-semibold mb-1.5 uppercase tracking-wider">Korekta salda portfela</p>
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <input
+                type="number"
+                autoFocus
+                step="0.01"
+                placeholder={String(freeFunds)}
+                value={walletInput}
+                onChange={e => setWalletInput(e.target.value)}
+                className="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl py-1.5 pl-3 pr-8 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-400 transition-all"
+                id="input-correct-free-funds"
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    const v = parseFloat(walletInput);
+                    if (!isNaN(v) && onCorrectFreeFunds) { onCorrectFreeFunds(v); setIsEditingWallet(false); setWalletInput(''); }
+                  }
+                  if (e.key === 'Escape') { setIsEditingWallet(false); setWalletInput(''); }
+                }}
+              />
+              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400 pointer-events-none">zł</span>
+            </div>
+            <button
+              onClick={() => {
+                const v = parseFloat(walletInput);
+                if (!isNaN(v) && onCorrectFreeFunds) { onCorrectFreeFunds(v); }
+                setIsEditingWallet(false);
+                setWalletInput('');
+              }}
+              className="text-xs font-bold px-3 py-1.5 bg-slate-800 text-white rounded-xl hover:bg-slate-700 transition-all cursor-pointer"
+              id="btn-confirm-correct-funds"
+            >Ok</button>
+            <button
+              onClick={() => { setIsEditingWallet(false); setWalletInput(''); }}
+              className="text-slate-400 hover:text-slate-700 p-1.5 cursor-pointer"
+              id="btn-cancel-correct-funds"
+            >
+              <LucideIcon name="X" size={14} />
+            </button>
+          </div>
+          <p className="text-[10px] text-slate-400 mt-1.5">Korekta techniczna — nie wpływa na statystyki przychodów/wydatków</p>
+        </div>
+      )}
     </motion.div>
   );
 }
