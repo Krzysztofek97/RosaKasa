@@ -366,100 +366,80 @@ function healRollovers(monthsList: BudgetMonth[]): BudgetMonth[] {
     };
   }
 
-  // 3. Dynamiczne rollovery kopert i wolnych środków
+  // 3. Koperty i rollovery — koperty zawsze przenoszone (o ile nie zarchiwizowane),
+  //    pieniądze tylko gdy poprzedni miesiąc zamknięty
   for (let i = 1; i < sorted.length; i++) {
     const prev = sorted[i - 1];
     const curr = sorted[i];
+    let changed = false;
 
-    if (prev.isClosed) {
-      let changed = false;
-      
-      const updatedEnvelopes = curr.envelopes.map(env => {
-        const prevEnv = prev.envelopes.find(e => e.name.toLowerCase().trim() === env.name.toLowerCase().trim());
-        if (!prevEnv) return env;
+    // Zaktualizuj rollover i limit istniejących kopert
+    const updatedEnvelopes = curr.envelopes.map(env => {
+      const prevEnv = prev.envelopes.find(e => e.name.toLowerCase().trim() === env.name.toLowerCase().trim());
+      if (!prevEnv) return env;
 
+      let targetRollover = 0;
+      if (prev.isClosed) {
         const leftover = prevEnv.rollover + prevEnv.allocated - prevEnv.spent;
         const rolloverAmount = Math.max(0, leftover);
-
         const prevTarget = prevEnv.rolloverTarget || 'envelope';
-        let targetRollover = rolloverAmount;
-        if (rolloverAmount > 0 && prevTarget !== 'envelope') {
-          targetRollover = 0;
-        }
-
-        if (env.rollover !== targetRollover || env.limit !== prevEnv.limit) {
-          changed = true;
-          return { ...env, rollover: targetRollover, limit: prevEnv.limit };
-        }
-        return env;
-      });
-
-      // Normalne przenoszenie wolnych środków z poprzedniego miesiąca
-      const newFreeFundsRollover = Math.max(0, prev.freeFunds);
-      const freeFundsDiff = newFreeFundsRollover - curr.freeFundsRollover;
-      
-      if (freeFundsDiff !== 0) {
-        changed = true;
+        targetRollover = (rolloverAmount > 0 && prevTarget === 'envelope') ? rolloverAmount : 0;
       }
 
-      // Dodaj brakujące koperty z poprzedniego miesiąca (nowe koperty utworzone w poprzednim)
-      const existingNames = updatedEnvelopes.map(e => e.name.toLowerCase().trim());
-      const missingEnvelopes = prev.envelopes
-        .filter(e => !existingNames.includes(e.name.toLowerCase().trim()))
-        .map(e => {
-          changed = true;
+      if (env.rollover !== targetRollover || env.limit !== prevEnv.limit) {
+        changed = true;
+        return { ...env, rollover: targetRollover, limit: prevEnv.limit };
+      }
+      return env;
+    });
+
+    // Zawsze dodaj brakujące koperty z poprzedniego miesiąca — chyba że zarchiwizowane
+    const existingNames = updatedEnvelopes.map(e => e.name.toLowerCase().trim());
+    const missingEnvelopes = prev.envelopes
+      .filter(e => !existingNames.includes(e.name.toLowerCase().trim()) && !e.isArchived)
+      .map(e => {
+        changed = true;
+        let rolloverAmount = 0;
+        if (prev.isClosed) {
           const leftover = e.rollover + e.allocated - e.spent;
-          const rolloverAmount = Math.max(0, leftover);
+          const raw = Math.max(0, leftover);
           const rTarget = e.rolloverTarget || 'envelope';
-          return {
-            id: `${e.id}-copied`,
-            name: e.name,
-            limit: e.limit,
-            allocated: 0,
-            spent: 0,
-            rollover: rTarget === 'envelope' ? rolloverAmount : 0,
-            rolloverTarget: rTarget,
-            icon: e.icon,
-            color: e.color,
-            quickSpends: e.quickSpends || [],
-          };
-        });
-
-      if (changed || missingEnvelopes.length > 0) {
-        sorted[i] = {
-          ...curr,
-          envelopes: [...updatedEnvelopes, ...missingEnvelopes],
-          freeFundsRollover: newFreeFundsRollover,
-          freeFunds: Math.max(0, curr.freeFunds + freeFundsDiff),
-        };
-      }
-    } else {
-      let changed = false;
-
-      const updatedEnvelopes = curr.envelopes.map(env => {
-        if (env.rollover > 0) {
-          changed = true;
-          return { ...env, rollover: 0 };
+          rolloverAmount = rTarget === 'envelope' ? raw : 0;
         }
-        return env;
+        return {
+          id: `${e.id}-copied`,
+          name: e.name,
+          limit: e.limit,
+          allocated: 0,
+          spent: 0,
+          rollover: rolloverAmount,
+          rolloverTarget: e.rolloverTarget,
+          icon: e.icon,
+          color: e.color,
+          quickSpends: e.quickSpends || [],
+        };
       });
 
-      let updatedFreeFunds = curr.freeFunds;
-      let updatedFreeFundsRollover = curr.freeFundsRollover;
-      if (curr.freeFundsRollover > 0) {
-        changed = true;
-        updatedFreeFunds = Math.max(0, curr.freeFunds - curr.freeFundsRollover);
-        updatedFreeFundsRollover = 0;
-      }
+    // Wolne środki przenoszone tylko przy zamkniętym poprzednim miesiącu
+    let newFreeFundsRollover = curr.freeFundsRollover;
+    let freeFundsDiff = 0;
+    if (prev.isClosed) {
+      newFreeFundsRollover = Math.max(0, prev.freeFunds);
+      freeFundsDiff = newFreeFundsRollover - curr.freeFundsRollover;
+      if (freeFundsDiff !== 0) changed = true;
+    } else if (curr.freeFundsRollover > 0) {
+      freeFundsDiff = -curr.freeFundsRollover;
+      newFreeFundsRollover = 0;
+      changed = true;
+    }
 
-      if (changed) {
-        sorted[i] = {
-          ...curr,
-          envelopes: updatedEnvelopes,
-          freeFunds: updatedFreeFunds,
-          freeFundsRollover: updatedFreeFundsRollover,
-        };
-      }
+    if (changed || missingEnvelopes.length > 0) {
+      sorted[i] = {
+        ...curr,
+        envelopes: [...updatedEnvelopes, ...missingEnvelopes],
+        freeFundsRollover: newFreeFundsRollover,
+        freeFunds: Math.max(0, curr.freeFunds + freeFundsDiff),
+      };
     }
   }
 
