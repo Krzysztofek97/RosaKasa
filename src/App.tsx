@@ -1013,7 +1013,7 @@ export default function App() {
       if (m.id !== selectedMonthId) return m;
       const env = m.envelopes.find(e => e.id === envelopeId);
       if (!env) return m;
-      const maxWithdraw = env.allocated - env.spent;
+      const maxWithdraw = (env.rollover ?? 0) + env.allocated - env.spent;
       if (amount > maxWithdraw) {
         showAlert('Za dużo', `Możesz wycofać maksymalnie ${formatCurrency(maxWithdraw)} z tej koperty.`);
         return m;
@@ -1036,7 +1036,7 @@ export default function App() {
       const targetEnv = m.envelopes.find(e => e.id === targetId);
       if (!sourceEnv || !targetEnv) return m;
       
-      const maxTransfer = sourceEnv.allocated - sourceEnv.spent;
+      const maxTransfer = (sourceEnv.rollover ?? 0) + sourceEnv.allocated - sourceEnv.spent;
       if (amount > maxTransfer) {
         showAlert('Błąd', `Możesz przenieść maksymalnie ${formatCurrency(maxTransfer)}.`);
         return m;
