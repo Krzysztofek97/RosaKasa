@@ -436,6 +436,18 @@ nav.rk-mobile-nav {
 }
 
 /* =============================================
+   MODAL Oczekiwany Wpływ (Screen 1)
+   ============================================= */
+[data-theme="dark"] .bg-slate-50\/60 { 
+  background: rgba(255, 255, 255, 0.04) !important; 
+  border-color: rgba(255, 255, 255, 0.08) !important; 
+}
+[data-theme="dark"] .bg-sky-50\/80 { 
+  background: rgba(14, 165, 233, 0.1) !important; 
+  border-color: rgba(14, 165, 233, 0.2) !important; 
+}
+
+/* =============================================
    ROLLOVER ENVELOPE CHIPS — dark mode (Screen 3)
    Chipy wyboru kopert w auto-przelewie (bg-white/50, bg-indigo-50)
    ============================================= */
