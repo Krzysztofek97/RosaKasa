@@ -393,15 +393,66 @@ nav.rk-mobile-nav {
 /* Tekst na ciemnym tle (sidebar aktywny tab) */
 /* bg-slate-900.text-white nie modyfikujemy globalnie — zbyt agresywne */
 
+/* =============================================
+   SIDEBAR BOTTOM ITEMS — dark mode (Screen 4)
+   Ciemne ikony w sidebara są teraz obsługiwane przez bg-slate-200/bg-amber-100 w TSX
+   Ale trzeba jaśniejszy tekst
+   ============================================= */
+[data-theme="dark"] .rk-sidebar .text-slate-500:not(.bg-slate-900) { color: #94a3b8 !important; }
+[data-theme="dark"] .rk-sidebar .bg-slate-200 { background: rgba(255,255,255,0.14) !important; color: #cbd5e1 !important; }
+[data-theme="dark"] .rk-sidebar .bg-amber-100 { background: rgba(245,158,11,0.25) !important; color: #fbbf24 !important; }
+
+/* =============================================
+   ENVELOPE ACTION MODAL ROWS — dark mode (Screen 1)
+   Szare przyciski akcji (Dodaj wydatek, Zasil kopertę…) mają za jasne tło
+   ============================================= */
+/* Wiersze akcji mają klasy bg-slate-50 lub bg-slate-100 */
+[data-theme="dark"] .bg-slate-50\/80 { background: rgba(99, 102, 241, 0.08) !important; border-color: rgba(139,92,246,0.15) !important; }
+[data-theme="dark"] .bg-slate-50.border.border-slate-100 {
+  background: rgba(99, 102, 241, 0.07) !important;
+  border-color: rgba(139, 92, 246, 0.15) !important;
+}
+[data-theme="dark"] .bg-slate-50.rounded-2xl {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* =============================================
+   ROLLOVER ENVELOPE CHIPS — dark mode (Screen 3)
+   Chipy wyboru kopert w auto-przelewie (bg-white/50, bg-indigo-50)
+   ============================================= */
+/* Niezaznaczone chipy kopert */
+[data-theme="dark"] label[class*="bg-white/50"][class*="border-white/60"],
+[data-theme="dark"] .bg-white\/50.border-white\/60 {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #cbd5e1 !important;
+}
+/* Zaznaczone chipy kopert */
+[data-theme="dark"] .bg-indigo-50.border-indigo-200.text-indigo-700 {
+  background: rgba(99, 102, 241, 0.25) !important;
+  border-color: rgba(99, 102, 241, 0.45) !important;
+  color: #a5b4fc !important;
+}
+[data-theme="dark"] .text-indigo-500 { color: #a5b4fc !important; }
+/* Ikony w chipach rollover */
+[data-theme="dark"] .text-slate-400 { color: #64748b !important; }
+
+
 /* Karta "Co nowego" badge */
-[data-theme="dark"] .bg-amber-50.text-amber-500 { background: rgba(245, 158, 11, 0.15) !important; }
+[data-theme="dark"] .bg-amber-100.text-amber-600,
+[data-theme="dark"] .bg-amber-50.text-amber-500 { background: rgba(245, 158, 11, 0.20) !important; color: #fbbf24 !important; }
 
 /* =============================================
    LOGO — dark mode
-   Białe tło PNG logo znika dzięki mix-blend-mode: lighten
+   PNG ma ciemne tło — screen blend mode czyni ciemne obszary przeźroczystymi
    ============================================= */
-[data-theme="dark"] aside img[alt="RosaKasa"] {
-  mix-blend-mode: lighten;
+#rk-logo-img {
+  /* light mode: normalne */
+}
+[data-theme="dark"] #rk-logo-img {
+  mix-blend-mode: screen;
+  filter: brightness(1.15) contrast(1.1);
 }
 
 
@@ -536,12 +587,13 @@ nav.rk-mobile-nav {
 
 /* =============================================
    NAKLEJKA KOPERTY (biała etykieta środkowa)
+   Jaśniejsza — żeby widać było tekst jak na innych kafelkach
    ============================================= */
 /* Tailwind generuje inline-like klasy — targetujemy element przez atrybut z-index */
 [data-theme="dark"] [class*="bg-white"][class*="rounded-xl"][class*="shadow-md"] {
 
-  background: rgba(22, 18, 50, 0.90) !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: rgba(15, 12, 35, 0.72) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
 }
 /* Znaczek pocztowy koperty */
 [data-theme="dark"] [class*="bg-white"][class*="border-dashed"][class*="border-slate-400"] {
