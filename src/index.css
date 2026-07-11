@@ -422,6 +422,14 @@ nav.rk-mobile-nav {
    ENVELOPE ACTION MODAL ROWS — dark mode (Screen 1)
    Szare przyciski akcji (Dodaj wydatek, Zasil kopertę…) mają za jasne tło
    ============================================= */
+/* =============================================
+   LOGO — dark mode
+   ============================================= */
+#rk-logo-img { display: block; }
+#rk-logo-img-dark { display: none; }
+[data-theme="dark"] #rk-logo-img { display: none; }
+[data-theme="dark"] #rk-logo-img-dark { display: block; }
+
 /* Wiersze akcji mają klasę bg-white/70 */
 [data-theme="dark"] button[class*="bg-white/70"] {
   background: rgba(255, 255, 255, 0.04) !important;

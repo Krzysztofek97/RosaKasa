@@ -1,27 +1,29 @@
 from PIL import Image
-import colorsys
 
 def perfect_logo(input_path, output_path):
     img = Image.open(input_path).convert("RGBA")
-    data = img.getdata()
+    width, height = img.size
+    
     new_data = []
     
-    for r, g, b, a in data:
-        h, s, v = colorsys.rgb_to_hsv(r/255.0, g/255.0, b/255.0)
-        
-        # If it's a bright, unsaturated pixel (white/gray background or JPEG noise)
-        if v > 0.6 and s < 0.2:
-            new_data.append((255, 255, 255, 0))
-        # If it's a dark, unsaturated pixel (dark blue/black text)
-        elif v < 0.5 and s < 0.3:
-            # Change to white so it's readable on dark mode
-            new_data.append((255, 255, 255, a))
-        else:
-            # Keep colored envelope
-            new_data.append((r, g, b, a))
+    for y in range(height):
+        for x in range(width):
+            r, g, b, a = img.getpixel((x, y))
             
-    img.putdata(new_data)
-    img.save(output_path, "PNG")
+            # 1. Remove pure white / very light gray background everywhere
+            if r > 230 and g > 230 and b > 230:
+                new_data.append((255, 255, 255, 0))
+            # 2. Invert dark text to white, BUT ONLY ON THE RIGHT SIDE of the image
+            elif x > width * 0.4 and r < 100 and g < 100 and b < 100:
+                # Text is dark, make it pure white for dark mode
+                new_data.append((255, 255, 255, a))
+            # 3. Everything else is completely untouched! (The envelope on the left remains 100% original)
+            else:
+                new_data.append((r, g, b, a))
+                
+    img2 = Image.new("RGBA", (width, height))
+    img2.putdata(new_data)
+    img2.save(output_path, "PNG")
 
 if __name__ == "__main__":
     perfect_logo(
