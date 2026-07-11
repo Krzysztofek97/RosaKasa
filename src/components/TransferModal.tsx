@@ -22,9 +22,9 @@ export default function TransferModal({ isOpen, onClose, sourceEnvelope, targetE
   const targetColorCfg = getColorConfig(targetEnvelope.color);
   
   const numAmount = parseFloat(amount) || 0;
-  // Maximum we can withdraw from source envelope
-  const maxTransfer = Math.max(0, sourceEnvelope.allocated - sourceEnvelope.spent);
-  const sourceAvailable = sourceEnvelope.rollover + sourceEnvelope.allocated - sourceEnvelope.spent;
+  // Maximum we can withdraw from source envelope (includes rollover)
+  const sourceAvailable = (sourceEnvelope.rollover ?? 0) + (sourceEnvelope.allocated ?? 0) - sourceEnvelope.spent;
+  const maxTransfer = Math.max(0, sourceAvailable);
   const targetAvailable = targetEnvelope.rollover + targetEnvelope.allocated - targetEnvelope.spent;
 
   const isValid = numAmount > 0 && numAmount <= maxTransfer;
