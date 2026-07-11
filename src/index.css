@@ -397,10 +397,149 @@ nav.rk-mobile-nav {
 [data-theme="dark"] .bg-amber-50.text-amber-500 { background: rgba(245, 158, 11, 0.15) !important; }
 
 /* =============================================
+   LOGO — dark mode
+   Białe tło PNG logo znika dzięki mix-blend-mode: lighten
+   ============================================= */
+[data-theme="dark"] aside img[alt="RosaKasa"] {
+  mix-blend-mode: lighten;
+}
+
+
+/* =============================================
+   DROPDOWN MENU — dark mode
+   (selektor miesięcy, selektor budżetu)
+   ============================================= */
+[data-theme="dark"] .absolute.bg-white.border.border-slate-100.rounded-2xl,
+[data-theme="dark"] .absolute.bg-white.rounded-2xl {
+  background: #1a1535 !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
+}
+/* Pozycje w dropdown */
+[data-theme="dark"] .absolute.bg-white button,
+[data-theme="dark"] .absolute.bg-white a {
+  color: #e2e8f0 !important;
+}
+[data-theme="dark"] .absolute.bg-white button:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+/* Aktywny element dropdown (zaznaczony miesiąc) */
+[data-theme="dark"] .text-emerald-600.bg-emerald-50\/30 {
+  background: rgba(16, 185, 129, 0.12) !important;
+  color: #34d399 !important;
+}
+
+/* =============================================
+   HEADER — dark mode
+   ============================================= */
+[data-theme="dark"] header.sticky {
+  background: rgba(13, 10, 28, 0.88) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.07) !important;
+  backdrop-filter: blur(20px) !important;
+}
+/* Selektor miesiąca (kontener z przyciskami prev/next) */
+[data-theme="dark"] .bg-white\/60.border.border-white\/80 {
+  background: rgba(255, 255, 255, 0.07) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+/* Przycisk nazwy miesiąca */
+[data-theme="dark"] header button.text-slate-800 {
+  color: #e2e8f0 !important;
+}
+
+/* =============================================
+   SAVING GOAL CARDS — dark mode
+   ============================================= */
+/* Sekcja "Zaoszczędzone / Kwota docelowa" */
+[data-theme="dark"] .bg-white\/30.backdrop-blur-xs.rounded-2xl {
+  background: rgba(255, 255, 255, 0.07) !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
+}
+/* text-*-950 jest prawie czarny — nie widoczny w dark mode */
+[data-theme="dark"] .text-amber-950   { color: #fde68a !important; }
+[data-theme="dark"] .text-orange-950  { color: #fed7aa !important; }
+[data-theme="dark"] .text-yellow-950  { color: #fef08a !important; }
+[data-theme="dark"] .text-lime-950    { color: #d9f99d !important; }
+[data-theme="dark"] .text-green-950   { color: #bbf7d0 !important; }
+[data-theme="dark"] .text-emerald-950 { color: #a7f3d0 !important; }
+[data-theme="dark"] .text-teal-950    { color: #99f6e4 !important; }
+[data-theme="dark"] .text-cyan-950    { color: #a5f3fc !important; }
+[data-theme="dark"] .text-sky-950     { color: #bae6fd !important; }
+[data-theme="dark"] .text-blue-950    { color: #bfdbfe !important; }
+[data-theme="dark"] .text-indigo-950  { color: #c7d2fe !important; }
+[data-theme="dark"] .text-purple-950  { color: #e9d5ff !important; }
+[data-theme="dark"] .text-violet-950  { color: #ede9fe !important; }
+[data-theme="dark"] .text-fuchsia-950 { color: #fae8ff !important; }
+[data-theme="dark"] .text-pink-950    { color: #fce7f3 !important; }
+[data-theme="dark"] .text-rose-950    { color: #ffe4e6 !important; }
+[data-theme="dark"] .text-stone-950   { color: #d6d3d1 !important; }
+[data-theme="dark"] .text-zinc-950    { color: #d4d4d8 !important; }
+
+/* text-*-700 w SavingGoalCard (label "ZAOSZCZĘDZONE") */
+[data-theme="dark"] .text-amber-700   { color: #fbbf24 !important; }
+[data-theme="dark"] .text-orange-700  { color: #fb923c !important; }
+[data-theme="dark"] .text-yellow-700  { color: #facc15 !important; }
+[data-theme="dark"] .text-lime-700    { color: #84cc16 !important; }
+[data-theme="dark"] .text-green-700   { color: #4ade80 !important; }
+[data-theme="dark"] .text-emerald-700 { color: #34d399 !important; }
+[data-theme="dark"] .text-teal-700    { color: #2dd4bf !important; }
+[data-theme="dark"] .text-cyan-700    { color: #22d3ee !important; }
+[data-theme="dark"] .text-sky-700     { color: #38bdf8 !important; }
+[data-theme="dark"] .text-blue-700    { color: #60a5fa !important; }
+[data-theme="dark"] .text-indigo-700  { color: #818cf8 !important; }
+[data-theme="dark"] .text-purple-700  { color: #c084fc !important; }
+[data-theme="dark"] .text-violet-700  { color: #a78bfa !important; }
+[data-theme="dark"] .text-fuchsia-700 { color: #e879f9 !important; }
+[data-theme="dark"] .text-pink-700    { color: #f472b6 !important; }
+[data-theme="dark"] .text-rose-700    { color: #fb7185 !important; }
+
+/* Separator linii w SavingGoalCard */
+[data-theme="dark"] .border-white\/50 { border-color: rgba(255, 255, 255, 0.08) !important; }
+/* "Bez limitu końcowego" baner */
+[data-theme="dark"] .bg-white\/20.rounded-xl { background: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .border-white\/40 { border-color: rgba(255,255,255,0.08) !important; }
+/* bg-*-100 (progress bar track) */
+[data-theme="dark"] .bg-amber-100   { background: rgba(245, 158, 11,  0.18) !important; }
+[data-theme="dark"] .bg-orange-100  { background: rgba(249, 115, 22,  0.18) !important; }
+[data-theme="dark"] .bg-yellow-100  { background: rgba(234, 179, 8,   0.18) !important; }
+[data-theme="dark"] .bg-lime-100    { background: rgba(132, 204, 22,  0.18) !important; }
+[data-theme="dark"] .bg-green-100   { background: rgba(34,  197, 94,  0.18) !important; }
+[data-theme="dark"] .bg-emerald-100 { background: rgba(16,  185, 129, 0.18) !important; }
+[data-theme="dark"] .bg-teal-100    { background: rgba(20,  184, 166, 0.18) !important; }
+[data-theme="dark"] .bg-cyan-100    { background: rgba(6,   182, 212, 0.18) !important; }
+[data-theme="dark"] .bg-sky-100     { background: rgba(14,  165, 233, 0.18) !important; }
+[data-theme="dark"] .bg-blue-100    { background: rgba(59,  130, 246, 0.18) !important; }
+[data-theme="dark"] .bg-indigo-100  { background: rgba(99,  102, 241, 0.18) !important; }
+[data-theme="dark"] .bg-purple-100  { background: rgba(168, 85,  247, 0.18) !important; }
+[data-theme="dark"] .bg-violet-100  { background: rgba(139, 92,  246, 0.18) !important; }
+[data-theme="dark"] .bg-fuchsia-100 { background: rgba(217, 70,  239, 0.18) !important; }
+[data-theme="dark"] .bg-pink-100    { background: rgba(236, 72,  153, 0.18) !important; }
+[data-theme="dark"] .bg-rose-100    { background: rgba(244, 63,  94,  0.18) !important; }
+
+/* =============================================
+   PIE CHART SVG TEXT — dark mode
+   SVG fill klasy Tailwinda (fill-*)
+   ============================================= */
+[data-theme="dark"] .fill-slate-800 { fill: #e2e8f0 !important; }
+[data-theme="dark"] .fill-slate-400 { fill: #94a3b8 !important; }
+
+/* =============================================
+   ENVELOPE ACTIONS MODAL — dark mode
+   ============================================= */
+/* Wiersze akcji (Dodaj wydatek, Zasil kopertę...) */
+[data-theme="dark"] .bg-slate-50\/80,
+[data-theme="dark"] .bg-slate-50.border {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+
+/* =============================================
    NAKLEJKA KOPERTY (biała etykieta środkowa)
    ============================================= */
 /* Tailwind generuje inline-like klasy — targetujemy element przez atrybut z-index */
 [data-theme="dark"] [class*="bg-white"][class*="rounded-xl"][class*="shadow-md"] {
+
   background: rgba(22, 18, 50, 0.90) !important;
   border-color: rgba(255, 255, 255, 0.12) !important;
 }

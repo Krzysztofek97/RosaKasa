@@ -246,8 +246,8 @@ export default function PieChartSummary({ months, envelopes, savingGoals = [], g
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
                 <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="select-none pointer-events-none">
-                  <tspan x="50%" dy="-10" className="text-[11px] font-bold uppercase fill-slate-400">Suma</tspan>
-                  <tspan x="50%" dy="22" className="text-2xl font-black fill-slate-800 font-mono">
+                  <tspan x="50%" dy="-10" style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', fill: 'var(--text-secondary)' }}>Suma</tspan>
+                  <tspan x="50%" dy="22" style={{ fontSize: '22px', fontWeight: 900, fill: 'var(--text-primary)', fontFamily: 'monospace' }}>
                     {formatCurrency(totalValue)}
                   </tspan>
                 </text>
