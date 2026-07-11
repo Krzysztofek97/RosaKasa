@@ -2109,7 +2109,6 @@ function DesktopSidebar({ activeTab, setActiveTab, onOpenChangelog, onOpenSettin
     <aside className="rk-sidebar hidden lg:flex flex-col fixed left-0 top-0 bottom-0 w-56 bg-white border-r border-slate-100 z-30 py-6 px-3">
       <div className="px-3 mb-6 flex justify-center" id="rk-logo-wrapper">
         <img src="/logo_cropped.png" alt="RosaKasa" id="rk-logo-img" className="w-full max-w-[240px] h-auto object-contain transition-all duration-300" />
-        <img src="/logo_dark.png" alt="RosaKasa" id="rk-logo-img-dark" className="w-full max-w-[240px] h-auto object-contain transition-all duration-300" />
       </div>
 
       <nav className="flex-1 space-y-1">
