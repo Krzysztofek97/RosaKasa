@@ -45,35 +45,19 @@ export default function PieChartSummary({ months, envelopes, savingGoals = [], g
   const chartData = useMemo(() => {
     const expenses = activeTxList.filter(t => {
       if (t.isSystem || t.description.startsWith('Inicjalizacja celu') || t.description.startsWith('Korekta salda celu')) return false;
-      return t.type === 'expense' || t.type === 'saving_transfer';
+      return t.type === 'expense';
     });
     
-    const aggregated = new Map<string, { amount: number; originalName: string; isSavingGroup: boolean }>();
+    const aggregated = new Map<string, { amount: number; originalName: string }>();
     expenses.forEach(t => {
-      let envelopeName = t.envelopeName || 'Nieznana';
-      let key = envelopeName.toLowerCase().trim();
+      const envelopeName = t.envelopeName || 'Nieznana';
+      const key = envelopeName.toLowerCase().trim();
       
-      if (t.type === 'saving_transfer') {
-        envelopeName = 'Oszczędności';
-        key = 'oszczędności_grupa';
-      }
-      
-      const current = aggregated.get(key) || { amount: 0, originalName: envelopeName, isSavingGroup: false };
-      const amountToAdd = (t.type === 'saving_transfer' && t.isWithdrawal) ? -t.amount : t.amount;
-      aggregated.set(key, { amount: current.amount + amountToAdd, originalName: envelopeName, isSavingGroup: current.isSavingGroup || t.type === 'saving_transfer' });
+      const current = aggregated.get(key) || { amount: 0, originalName: envelopeName };
+      aggregated.set(key, { amount: current.amount + t.amount, originalName: envelopeName });
     });
 
     const data = Array.from(aggregated.entries()).map(([key, info]) => {
-      if (info.isSavingGroup) {
-        return {
-          name: 'Oszczędności',
-          value: info.amount,
-          colorClass: 'blue',
-          envKey: 'oszczędności_grupa',
-          icon: 'PiggyBank',
-        };
-      }
-
       const env = envelopes.find(e => e.name.toLowerCase().trim() === key);
       
       return {
@@ -95,12 +79,6 @@ export default function PieChartSummary({ months, envelopes, savingGoals = [], g
 
   const activeTransactions = useMemo(() => {
     if (!selectedData) return [];
-    
-    if (selectedData.envKey === 'oszczędności_grupa') {
-      return activeTxList
-        .filter(t => t.type === 'saving_transfer' && !t.isSystem && !t.description.startsWith('Inicjalizacja celu') && !t.description.startsWith('Korekta salda celu'))
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    }
 
     return activeTxList
       .filter(t => t.type === 'expense' && (t.envelopeName || 'Nieznana').toLowerCase().trim() === selectedData.envKey)
