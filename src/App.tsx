@@ -1734,6 +1734,7 @@ export default function App() {
             onSelectMonth={setSelectedMonthId}
             onOpenChangelog={() => setIsChangelogOpen(true)}
             onOpenSettings={() => setIsSettingsOpen(true)}
+            hideClosedMonths={settings.hideClosedMonths}
             showControls={activeTab === 'envelopes'}
           />
 
