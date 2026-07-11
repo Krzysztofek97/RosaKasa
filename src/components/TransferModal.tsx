@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Envelope } from '../types';
 import { formatCurrency } from '../utils';
@@ -14,20 +14,48 @@ interface TransferModalProps {
 }
 
 export default function TransferModal({ isOpen, onClose, sourceEnvelope, targetEnvelope, onTransfer }: TransferModalProps) {
-  const [amount, setAmount] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Maximum we can withdraw from source envelope (includes rollover)
+  const sourceAvailable = (sourceEnvelope.rollover ?? 0) + (sourceEnvelope.allocated ?? 0) - sourceEnvelope.spent;
+  // Round to 2 decimal places to avoid floating-point comparison issues (e.g. 0.01 > 0.01000000001)
+  const maxTransfer = Math.round(Math.max(0, sourceAvailable) * 100) / 100;
+  const targetAvailable = (targetEnvelope.rollover ?? 0) + (targetEnvelope.allocated ?? 0) - targetEnvelope.spent;
+
+  // Smart pre-fill logic:
+  // - If target is in deficit → suggest the amount needed to bring it to 0 (capped at maxTransfer)
+  // - Otherwise → suggest the full available amount from source
+  const computeDefaultAmount = (): string => {
+    if (maxTransfer <= 0) return '';
+    if (targetAvailable < 0) {
+      const deficit = Math.round(Math.abs(targetAvailable) * 100) / 100;
+      return String(Math.min(deficit, maxTransfer));
+    }
+    return String(maxTransfer);
+  };
+
+  const [amount, setAmount] = useState(() => computeDefaultAmount());
+
+  // When modal opens, select the pre-filled text so user can clear it immediately with Backspace
+  useEffect(() => {
+    if (isOpen) {
+      const defaultVal = computeDefaultAmount();
+      setAmount(defaultVal);
+      // Defer select() until after the input renders with the value
+      setTimeout(() => {
+        inputRef.current?.select();
+      }, 50);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const sourceColorCfg = getColorConfig(sourceEnvelope.color);
   const targetColorCfg = getColorConfig(targetEnvelope.color);
-  
+
   const numAmount = parseFloat(amount) || 0;
-  // Maximum we can withdraw from source envelope (includes rollover)
-  const sourceAvailable = (sourceEnvelope.rollover ?? 0) + (sourceEnvelope.allocated ?? 0) - sourceEnvelope.spent;
-  // Round to 2 decimal places to avoid floating-point comparison issues (e.g. 0.01 > 0.01000000001)
-  const maxTransfer = Math.round(Math.max(0, sourceAvailable) * 100) / 100;
   const roundedAmount = Math.round(numAmount * 100) / 100;
-  const targetAvailable = targetEnvelope.rollover + targetEnvelope.allocated - targetEnvelope.spent;
 
   const isValid = roundedAmount > 0 && roundedAmount <= maxTransfer;
 
@@ -119,6 +147,7 @@ export default function TransferModal({ isOpen, onClose, sourceEnvelope, targetE
               Kwota (PLN)
             </label>
             <input
+              ref={inputRef}
               type="number"
               min="0"
               step="1"
