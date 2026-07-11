@@ -1,27 +1,30 @@
 from PIL import Image
+import colorsys
 
-def process_logo(input_path, output_path):
+def perfect_logo(input_path, output_path):
     img = Image.open(input_path).convert("RGBA")
     data = img.getdata()
     new_data = []
     
     for r, g, b, a in data:
-        # If the pixel is dark and grayish (likely the dark blue/black text)
-        if r < 120 and g < 120 and b < 120 and abs(r-g) < 30 and abs(g-b) < 30:
-            # Make it light for dark mode, KEEP ORIGINAL ALPHA
-            lightness = max(r, g, b)
-            new_val = min(255, 255 - lightness + 50)  # make it nice and bright white
-            new_data.append((new_val, new_val, new_val, a))
+        h, s, v = colorsys.rgb_to_hsv(r/255.0, g/255.0, b/255.0)
+        
+        # If it's a bright, unsaturated pixel (white/gray background or JPEG noise)
+        if v > 0.6 and s < 0.2:
+            new_data.append((255, 255, 255, 0))
+        # If it's a dark, unsaturated pixel (dark blue/black text)
+        elif v < 0.5 and s < 0.3:
+            # Change to white so it's readable on dark mode
+            new_data.append((255, 255, 255, a))
         else:
-            # Keep all other pixels EXACTLY THE SAME (including original alpha)
+            # Keep colored envelope
             new_data.append((r, g, b, a))
             
     img.putdata(new_data)
     img.save(output_path, "PNG")
-    print("Saved logo_dark.png with original alpha!")
 
 if __name__ == "__main__":
-    process_logo(
+    perfect_logo(
         "c:\\Users\\Krzysztof\\antigravity\\RosaKasa\\public\\logo_cropped.png",
         "c:\\Users\\Krzysztof\\antigravity\\RosaKasa\\public\\logo_dark.png"
     )

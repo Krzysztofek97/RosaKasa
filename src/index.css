@@ -473,7 +473,13 @@ nav.rk-mobile-nav {
 [data-theme="dark"] .bg-amber-100.text-amber-600,
 [data-theme="dark"] .bg-amber-50.text-amber-500 { background: rgba(245, 158, 11, 0.20) !important; color: #fbbf24 !important; }
 
-/* Logo bez modyfikacji, tak jak prosił użytkownik */
+/* =============================================
+   LOGO — dark mode
+   ============================================= */
+#rk-logo-img { display: block; }
+#rk-logo-img-dark { display: none; }
+[data-theme="dark"] #rk-logo-img { display: none; }
+[data-theme="dark"] #rk-logo-img-dark { display: block; }
 
 
 /* =============================================
