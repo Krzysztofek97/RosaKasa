@@ -6,33 +6,19 @@ def process_logo(input_path, output_path):
     new_data = []
     
     for r, g, b, a in data:
-        # Calculate perceived luminance (0-255)
-        lum = (r * 299 + g * 587 + b * 114) / 1000
-        
-        # 1. Smoothly remove the white background
-        new_a = a
-        if lum > 240:
-            new_a = 0
-        elif lum > 180:
-            # Smooth transition for anti-aliased edges
-            # lum=240 -> a=0; lum=180 -> a=original_a
-            factor = (240 - lum) / 60.0
-            new_a = int(a * factor)
-            
-        # 2. Make dark text white for dark mode
-        new_r, new_g, new_b = r, g, b
-        if r < 120 and g < 120 and b < 120:
-            # It's dark text. Convert to white, but keep its lightness variation
-            # e.g. a pixel of (50,50,50) becomes (255,255,255)
-            # A pixel of (100,100,100) becomes (200,200,200)
+        # If the pixel is dark and grayish (likely the dark blue/black text)
+        if r < 120 and g < 120 and b < 120 and abs(r-g) < 30 and abs(g-b) < 30:
+            # Make it light for dark mode, KEEP ORIGINAL ALPHA
             lightness = max(r, g, b)
-            new_val = 255 - lightness
-            new_r, new_g, new_b = new_val, new_val, new_val
-            
-        new_data.append((new_r, new_g, new_b, new_a))
+            new_val = min(255, 255 - lightness + 50)  # make it nice and bright white
+            new_data.append((new_val, new_val, new_val, a))
+        else:
+            # Keep all other pixels EXACTLY THE SAME (including original alpha)
+            new_data.append((r, g, b, a))
             
     img.putdata(new_data)
     img.save(output_path, "PNG")
+    print("Saved logo_dark.png with original alpha!")
 
 if __name__ == "__main__":
     process_logo(
