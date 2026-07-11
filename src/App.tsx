@@ -497,6 +497,7 @@ export default function App() {
       enableRollover: true,
       hideClosedMonths: false,
       includeSavingsInTotal: true,
+      theme: 'light',
     };
     try {
       const saved = localStorage.getItem('rosakasa_settings');
@@ -504,6 +505,16 @@ export default function App() {
     } catch {}
     return defaults;
   });
+
+  // Apply theme to <html> element whenever settings.theme changes
+  useEffect(() => {
+    const root = document.documentElement;
+    if (settings.theme === 'dark') {
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.removeAttribute('data-theme');
+    }
+  }, [settings.theme]);
 
   const [activeTab, setActiveTab] = useState<'envelopes' | 'savings' | 'stats' | 'transactions'>('envelopes');
   const [timeScope, setTimeScope] = useState<'month' | 'year' | 'all'>('month');
@@ -2095,7 +2106,7 @@ const TABS = [
 
 function DesktopSidebar({ activeTab, setActiveTab, onOpenChangelog, onOpenSettings, onLogout }: NavProps) {
   return (
-    <aside className="hidden lg:flex flex-col fixed left-0 top-0 bottom-0 w-56 bg-white border-r border-slate-100 z-30 py-6 px-3">
+    <aside className="rk-sidebar hidden lg:flex flex-col fixed left-0 top-0 bottom-0 w-56 bg-white border-r border-slate-100 z-30 py-6 px-3">
       <div className="px-3 mb-6 flex justify-center">
         <img src="/logo_cropped.png" alt="RosaKasa" className="w-full max-w-[240px] h-auto object-contain transition-all duration-300" />
       </div>
@@ -2159,7 +2170,7 @@ function DesktopSidebar({ activeTab, setActiveTab, onOpenChangelog, onOpenSettin
 
 function MobileNav({ activeTab, setActiveTab }: { activeTab: string; setActiveTab: (t: any) => void }) {
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-slate-100 z-40 flex items-center justify-around px-2 py-2 shadow-xl">
+    <nav className="rk-mobile-nav lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-slate-100 z-40 flex items-center justify-around px-2 py-2 shadow-xl">
       {TABS.map(tab => (
         <button
           key={tab.id}

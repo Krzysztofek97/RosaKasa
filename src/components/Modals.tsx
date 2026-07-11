@@ -1241,6 +1241,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, 
   const [enableRollover, setEnableRollover] = useState(true);
   const [hideClosedMonths, setHideClosedMonths] = useState(false);
   const [includeSavingsInTotal, setIncludeSavingsInTotal] = useState(true);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
     if (settings) {
@@ -1249,6 +1250,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, 
       setEnableRollover(settings.enableRollover);
       setHideClosedMonths(settings.hideClosedMonths);
       setIncludeSavingsInTotal(settings.includeSavingsInTotal ?? true);
+      setTheme(settings.theme ?? 'light');
     }
   }, [settings, isOpen]);
 
@@ -1256,7 +1258,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ currency, showDecimals, enableRollover, hideClosedMonths, includeSavingsInTotal });
+    onSave({ currency, showDecimals, enableRollover, hideClosedMonths, includeSavingsInTotal, theme });
     onClose();
   };
 
@@ -1322,6 +1324,81 @@ export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, 
               <div className="border-t border-slate-100 pt-3">
                 <ToggleRow label="Pokazuj grosze / centy" desc="Włącz wyświetlanie miejsc po przecinku" value={showDecimals} onChange={() => setShowDecimals(!showDecimals)} id="toggle-settings-decimals" />
               </div>
+            </div>
+          </div>
+
+          <div className="space-y-2.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">Wygląd</label>
+            <div className="grid grid-cols-2 gap-3">
+              {/* Light theme card */}
+              <button
+                type="button"
+                id="btn-theme-light"
+                onClick={() => setTheme('light')}
+                className={`relative rounded-2xl p-3 border-2 transition-all cursor-pointer overflow-hidden ${
+                  theme === 'light'
+                    ? 'border-indigo-500 shadow-lg shadow-indigo-200/50'
+                    : 'border-slate-200 hover:border-slate-300'
+                }`}
+              >
+                {/* Mini preview */}
+                <div className="rounded-xl overflow-hidden mb-2 h-16" style={{ background: 'linear-gradient(135deg, #ffe4e6 0%, #e0e7ff 50%, #f0fdfa 100%)' }}>
+                  <div className="flex h-full">
+                    <div className="w-8 h-full" style={{ background: 'rgba(255,255,255,0.9)' }} />
+                    <div className="flex-1 p-1.5 space-y-1">
+                      <div className="rounded" style={{ height: '8px', background: 'rgba(255,255,255,0.7)' }} />
+                      <div className="rounded" style={{ height: '8px', background: 'rgba(255,255,255,0.5)', width: '70%' }} />
+                      <div className="rounded" style={{ height: '8px', background: 'rgba(255,255,255,0.5)', width: '50%' }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-bold text-slate-800 text-left">Jasny</p>
+                    <p className="text-[10px] text-slate-400 text-left">Różowo-fioletowy</p>
+                  </div>
+                  {theme === 'light' && (
+                    <div className="w-4 h-4 rounded-full bg-indigo-500 flex items-center justify-center shrink-0">
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1.5 4l1.8 2L6.5 2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </div>
+                  )}
+                </div>
+              </button>
+
+              {/* Dark theme card */}
+              <button
+                type="button"
+                id="btn-theme-dark"
+                onClick={() => setTheme('dark')}
+                className={`relative rounded-2xl p-3 border-2 transition-all cursor-pointer overflow-hidden ${
+                  theme === 'dark'
+                    ? 'border-violet-500 shadow-lg shadow-violet-900/30'
+                    : 'border-slate-200 hover:border-slate-300'
+                }`}
+              >
+                {/* Mini preview */}
+                <div className="rounded-xl overflow-hidden mb-2 h-16" style={{ background: 'linear-gradient(135deg, #0f0c1e 0%, #1a1035 40%, #0d1b2a 100%)' }}>
+                  <div className="flex h-full">
+                    <div className="w-8 h-full" style={{ background: 'rgba(13,10,28,0.97)' }} />
+                    <div className="flex-1 p-1.5 space-y-1">
+                      <div className="rounded" style={{ height: '8px', background: 'rgba(255,255,255,0.07)' }} />
+                      <div className="rounded" style={{ height: '8px', background: 'rgba(255,255,255,0.05)', width: '70%' }} />
+                      <div className="rounded" style={{ height: '8px', background: 'rgba(255,255,255,0.05)', width: '50%' }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-bold text-slate-800 text-left">Ciemny</p>
+                    <p className="text-[10px] text-slate-400 text-left">Granatowo-fioletowy</p>
+                  </div>
+                  {theme === 'dark' && (
+                    <div className="w-4 h-4 rounded-full bg-violet-500 flex items-center justify-center shrink-0">
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1.5 4l1.8 2L6.5 2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </div>
+                  )}
+                </div>
+              </button>
             </div>
           </div>
 

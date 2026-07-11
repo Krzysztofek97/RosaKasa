@@ -76,6 +76,7 @@ export interface AppSettings {
   enableRollover: boolean;
   hideClosedMonths: boolean;
   includeSavingsInTotal?: boolean;
+  theme?: 'light' | 'dark';
 }
 
 export interface BudgetAccount {
