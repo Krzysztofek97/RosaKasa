@@ -146,16 +146,6 @@ export default function EnvelopeActionsModal({
             </div>
             <LucideIcon name="ChevronRight" size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
           </button>
-          >
-            <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-600 group-hover:scale-110 transition-transform">
-              <LucideIcon name="Pencil" size={18} />
-            </div>
-            <div className="flex-1">
-              <p className="text-xs font-bold text-slate-800">Edytuj kopertę</p>
-              <p className="text-[10px] text-slate-500 font-medium mt-0.5">Zmień nazwę, ikonę, kolor lub przenoszenie środków</p>
-            </div>
-            <LucideIcon name="ChevronRight" size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-          </button>
         </div>
 
         {/* Footer/Cancel */}

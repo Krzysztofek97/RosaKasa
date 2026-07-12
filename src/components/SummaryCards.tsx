@@ -127,7 +127,6 @@ export default function SummaryCards({
       iconClass: 'text-slate-600',
       labelClass: 'text-slate-400',
       valueClass: 'text-slate-800',
-      valueClass: 'text-slate-800',
       correctable: !isClosed && !isReadOnly && !!onCorrectFreeFunds,
     },
     {
