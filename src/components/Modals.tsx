@@ -1233,9 +1233,10 @@ interface SettingsModalProps {
   onSave: (newSettings: AppSettings) => void;
   onResetData: () => void;
   onClearData?: () => void;
+  uid?: string;
 }
 
-export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, onClearData }: SettingsModalProps) {
+export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, onClearData, uid }: SettingsModalProps) {
   const [currency, setCurrency] = useState<'PLN' | 'EUR' | 'USD' | 'GBP'>('PLN');
   const [showDecimals, setShowDecimals] = useState(false);
   const [enableRollover, setEnableRollover] = useState(true);
@@ -1437,6 +1438,13 @@ export function SettingsModal({ isOpen, onClose, settings, onSave, onResetData, 
               Wszystkie dane są bezpiecznie przechowywane lokalnie w pamięci Twojej przeglądarki.
             </p>
           </div>
+
+          {uid && (
+            <div className="bg-slate-100/50 rounded-2xl p-3 border border-slate-200 flex flex-col gap-1">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Twój unikalny ID konta (UID)</span>
+              <code className="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded-md break-all select-all">{uid}</code>
+            </div>
+          )}
 
           <div className="pt-4 flex gap-3">
             <button type="button" onClick={onClose} className="px-4 py-3 text-xs font-bold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all cursor-pointer uppercase tracking-wider" id="btn-settings-cancel">

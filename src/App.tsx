@@ -2049,6 +2049,7 @@ export default function App() {
           onSave={handleSaveSettings}
           onResetData={handleResetToSeeds}
           onClearData={handleClearAllData}
+          uid={user?.uid}
         />
       )}
 
