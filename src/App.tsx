@@ -2096,7 +2096,8 @@ export default function App() {
           <span className="text-xs font-black">{formatCurrency(activeMonth.freeFunds)}</span>
         </div>
       )}
-    </div>
+      </div>
+    </ReadOnlyContext.Provider>
   );
 }
 
