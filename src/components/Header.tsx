@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BudgetMonth, BudgetAccount } from '../types';
 import LucideIcon from './LucideIcon';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
+import { ReadOnlyContext } from '../App';
 
 interface HeaderProps {
   budgets?: BudgetAccount[];
@@ -45,6 +46,7 @@ export default function Header({
   const [isBudgetOpen, setIsBudgetOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const budgetDropdownRef = useRef<HTMLDivElement>(null);
+  const isReadOnly = useContext(ReadOnlyContext);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -145,34 +147,52 @@ export default function Header({
                           >
                             <LucideIcon name="Edit2" size={14} />
                           </button>
-                          <button
-                            onClick={() => {
-                              if (onDeleteBudget) onDeleteBudget(b.id);
-                            }}
-                            className="p-1.5 text-slate-400 hover:text-rose-600 rounded-md hover:bg-rose-50 transition-colors"
-                            title="Usuń"
-                          >
-                            <LucideIcon name="Trash2" size={14} />
-                          </button>
+                          {!isReadOnly && (
+                            <>
+                              <button
+                                onClick={() => {
+                                  const newName = prompt('Zmień nazwę budżetu:', b.name);
+                                  if (newName && newName.trim() !== '' && onRenameBudget) {
+                                    onRenameBudget(b.id, newName.trim());
+                                  }
+                                }}
+                                className="p-1.5 text-slate-400 hover:text-blue-600 rounded-md hover:bg-blue-50 transition-colors"
+                                title="Zmień nazwę"
+                              >
+                                <LucideIcon name="Edit2" size={14} />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (onDeleteBudget) onDeleteBudget(b.id);
+                                }}
+                                className="p-1.5 text-slate-400 hover:text-rose-600 rounded-md hover:bg-rose-50 transition-colors"
+                                title="Usuń"
+                              >
+                                <LucideIcon name="Trash2" size={14} />
+                              </button>
+                            </>
+                          )}
                         </div>
                       </div>
                     ))}
                     
-                    <div className="mt-2 pt-2 border-t border-slate-100 px-2">
-                      <button
-                        onClick={() => {
-                          const newName = prompt('Podaj nazwę nowego budżetu (np. "Wyjazd na narty", "Oszczędności Firmowe"):');
-                          if (newName && newName.trim() !== '' && onAddBudget) {
-                            onAddBudget(newName.trim());
-                            setIsBudgetOpen(false);
-                          }
-                        }}
-                        className="w-full flex items-center gap-2 px-3 py-2 text-sm font-semibold text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
-                      >
-                        <LucideIcon name="PlusCircle" size={16} />
-                        Utwórz nowy budżet
-                      </button>
-                    </div>
+                    {!isReadOnly && (
+                      <div className="mt-2 pt-2 border-t border-slate-100 px-2">
+                        <button
+                          onClick={() => {
+                            const newName = prompt('Podaj nazwę nowego budżetu (np. "Wyjazd na narty", "Oszczędności Firmowe"):');
+                            if (newName && newName.trim() !== '' && onAddBudget) {
+                              onAddBudget(newName.trim());
+                              setIsBudgetOpen(false);
+                            }
+                          }}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-sm font-semibold text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
+                        >
+                          <LucideIcon name="PlusCircle" size={16} />
+                          Utwórz nowy budżet
+                        </button>
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { motion } from 'motion/react';
 import { Envelope } from '../types';
 import { formatCurrency } from '../utils';
 import { getColorConfig } from '../data';
 import LucideIcon from './LucideIcon';
+import { ReadOnlyContext } from '../App';
 
 interface EnvelopeActionsModalProps {
   isOpen: boolean;
@@ -25,6 +26,8 @@ export default function EnvelopeActionsModal({
   onEdit,
   onHistory,
 }: EnvelopeActionsModalProps) {
+  const isReadOnly = useContext(ReadOnlyContext);
+
   if (!isOpen || !envelope) return null;
 
   const colorCfg = getColorConfig(envelope.color);
@@ -68,43 +71,65 @@ export default function EnvelopeActionsModal({
 
         {/* Action List */}
         <div className="p-4 space-y-2 bg-white/40">
-          {/* 1. Dodaj wydatek */}
-          <button
-            onClick={() => {
-              onAddExpense(envelope);
-              onClose();
-            }}
-            className="w-full flex items-center gap-4 p-3 rounded-2xl bg-white/70 hover:bg-rose-50 border border-white/60 hover:border-rose-100 transition-all duration-200 cursor-pointer group shadow-sm text-left font-sans"
-          >
-            <div className="p-2.5 rounded-xl bg-rose-500/10 text-rose-600 group-hover:scale-110 transition-transform">
-              <LucideIcon name="TrendingDown" size={18} />
-            </div>
-            <div className="flex-1">
-              <p className="text-xs font-bold text-slate-800">Dodaj wydatek</p>
-              <p className="text-[10px] text-slate-500 font-medium mt-0.5">Zarejestruj nowy koszt z tej koperty</p>
-            </div>
-            <LucideIcon name="ChevronRight" size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-          </button>
+          {!isReadOnly && (
+            <>
+              {/* 1. Dodaj wydatek */}
+              <button
+                onClick={() => {
+                  onAddExpense(envelope);
+                  onClose();
+                }}
+                className="w-full flex items-center gap-4 p-3 rounded-2xl bg-white/70 hover:bg-rose-50 border border-white/60 hover:border-rose-100 transition-all duration-200 cursor-pointer group shadow-sm text-left font-sans"
+              >
+                <div className="p-2.5 rounded-xl bg-rose-500/10 text-rose-600 group-hover:scale-110 transition-transform">
+                  <LucideIcon name="TrendingDown" size={18} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-bold text-slate-800">Dodaj wydatek</p>
+                  <p className="text-[10px] text-slate-500 font-medium mt-0.5">Zarejestruj nowy koszt z tej koperty</p>
+                </div>
+                <LucideIcon name="ChevronRight" size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+              </button>
 
-          {/* 2. Zasil (Wpływ / Przydział środków) */}
-          <button
-            onClick={() => {
-              onAllocate(envelope);
-              onClose();
-            }}
-            className="w-full flex items-center gap-4 p-3 rounded-2xl bg-white/70 hover:bg-emerald-50 border border-white/60 hover:border-emerald-100 transition-all duration-200 cursor-pointer group shadow-sm text-left font-sans"
-          >
-            <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 group-hover:scale-110 transition-transform">
-              <LucideIcon name="TrendingUp" size={18} />
-            </div>
-            <div className="flex-1">
-              <p className="text-xs font-bold text-slate-800">Zasil kopertę / Wpływ</p>
-              <p className="text-[10px] text-slate-500 font-medium mt-0.5">Przydziel lub wycofaj środki z Portfela</p>
-            </div>
-            <LucideIcon name="ChevronRight" size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-          </button>
+              {/* 2. Zasil (Wpływ / Przydział środków) */}
+              <button
+                onClick={() => {
+                  onAllocate(envelope);
+                  onClose();
+                }}
+                className="w-full flex items-center gap-4 p-3 rounded-2xl bg-white/70 hover:bg-emerald-50 border border-white/60 hover:border-emerald-100 transition-all duration-200 cursor-pointer group shadow-sm text-left font-sans"
+              >
+                <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 group-hover:scale-110 transition-transform">
+                  <LucideIcon name="TrendingUp" size={18} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-bold text-slate-800">Zasil kopertę / Wpływ</p>
+                  <p className="text-[10px] text-slate-500 font-medium mt-0.5">Przydziel lub wycofaj środki z Portfela</p>
+                </div>
+                <LucideIcon name="ChevronRight" size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+              </button>
 
-          {/* 3. Historia transakcji */}
+              {/* 3. Edytuj kopertę */}
+              <button
+                onClick={() => {
+                  onEdit(envelope);
+                  onClose();
+                }}
+                className="w-full flex items-center gap-4 p-3 rounded-2xl bg-white/70 hover:bg-blue-50 border border-white/60 hover:border-blue-100 transition-all duration-200 cursor-pointer group shadow-sm text-left font-sans"
+              >
+                <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-600 group-hover:scale-110 transition-transform">
+                  <LucideIcon name="Pencil" size={18} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-bold text-slate-800">Edytuj kopertę</p>
+                  <p className="text-[10px] text-slate-500 font-medium mt-0.5">Zmień nazwę, ikonę, kolor lub przenoszenie środków</p>
+                </div>
+                <LucideIcon name="ChevronRight" size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            </>
+          )}
+
+          {/* 4. Historia transakcji */}
           <button
             onClick={() => {
               onHistory(envelope);
@@ -121,14 +146,6 @@ export default function EnvelopeActionsModal({
             </div>
             <LucideIcon name="ChevronRight" size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
           </button>
-
-          {/* 4. Edytuj kopertę */}
-          <button
-            onClick={() => {
-              onEdit(envelope);
-              onClose();
-            }}
-            className="w-full flex items-center gap-4 p-3 rounded-2xl bg-white/70 hover:bg-blue-50 border border-white/60 hover:border-blue-100 transition-all duration-200 cursor-pointer group shadow-sm text-left font-sans"
           >
             <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-600 group-hover:scale-110 transition-transform">
               <LucideIcon name="Pencil" size={18} />

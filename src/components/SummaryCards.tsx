@@ -3,6 +3,8 @@ import { motion } from 'motion/react';
 import { Envelope, AppSettings } from '../types';
 import { formatCurrency } from '../utils';
 import LucideIcon from './LucideIcon';
+import { ReadOnlyContext } from '../App';
+import { useContext } from 'react';
 
 interface SummaryCardsProps {
   freeFunds: number;
@@ -39,6 +41,7 @@ export default function SummaryCards({
 }: SummaryCardsProps) {
   const includeSavings = settings?.includeSavingsInTotal ?? true;
   const totalAccountBalance = freeFunds + totalEnvelopeFunds + (includeSavings ? totalSavings : 0);
+  const isReadOnly = useContext(ReadOnlyContext);
 
   const touchStartPos = useRef<{ x: number; y: number } | null>(null);
   const touchTimer = useRef<NodeJS.Timeout | null>(null);
@@ -49,7 +52,7 @@ export default function SummaryCards({
 
   // --- Drag & Drop ---
   const handleDragStart = (e: React.DragEvent) => {
-    if (isClosed || freeFunds <= 0) { e.preventDefault(); return; }
+    if (isClosed || freeFunds <= 0 || isReadOnly) { e.preventDefault(); return; }
     e.dataTransfer.setData('text/plain', 'free-funds');
     e.dataTransfer.effectAllowed = 'move';
   };
@@ -124,7 +127,8 @@ export default function SummaryCards({
       iconClass: 'text-slate-600',
       labelClass: 'text-slate-400',
       valueClass: 'text-slate-800',
-      correctable: !isClosed && !!onCorrectFreeFunds,
+      valueClass: 'text-slate-800',
+      correctable: !isClosed && !isReadOnly && !!onCorrectFreeFunds,
     },
     {
       label: 'Koperty',
@@ -179,7 +183,7 @@ export default function SummaryCards({
           </span>
         </div>
 
-        {onAddIncome && (
+        {onAddIncome && !isReadOnly && (
           <button
             onClick={onAddIncome}
             className="flex items-center gap-1 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-xl transition-all shrink-0 cursor-pointer shadow-sm mt-0.5"

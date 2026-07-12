@@ -3,6 +3,8 @@ import { motion } from 'motion/react';
 import { SavingGoal, SavingGoalStorageType } from '../types';
 import { formatCurrency, calculatePercentage } from '../utils';
 import LucideIcon from './LucideIcon';
+import { ReadOnlyContext } from '../App';
+import { useContext } from 'react';
 
 const goalThemes: Record<string, { ring: string, border: string, bg: string, text: string, textLight: string, progressBg: string }> = {
   amber: { ring: 'ring-amber-500/15', border: 'border-amber-500/30', bg: 'bg-amber-500', text: 'text-amber-700', textLight: 'text-amber-950', progressBg: 'bg-amber-100' },
@@ -63,6 +65,7 @@ export default function SavingGoalCard({
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
+  const isReadOnly = useContext(ReadOnlyContext);
   const [isAutoSetupOpen, setIsAutoSetupOpen] = useState(false);
   const [autoAmountInput, setAutoAmountInput] = useState(autoTransferAmount ? String(autoTransferAmount) : '');
   const [autoDayInput, setAutoDayInput] = useState(autoTransferDay ? String(autoTransferDay) : '1');
@@ -156,7 +159,7 @@ export default function SavingGoalCard({
         </div>
 
         {/* Actions (Edit) */}
-        {!isClosed && (
+        {!isClosed && !isReadOnly && (
           <div className="flex items-center shrink-0">
             <button
               onClick={() => onEditGoal(goal)}
@@ -228,15 +231,15 @@ export default function SavingGoalCard({
           </div>
 
           <button
-            onClick={() => !isClosed && setIsAutoSetupOpen(!isAutoSetupOpen)}
-            disabled={isClosed}
+            onClick={() => !isClosed && !isReadOnly && setIsAutoSetupOpen(!isAutoSetupOpen)}
+            disabled={isClosed || isReadOnly}
             className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer shadow-xs ${
               autoTransferAmount || linkedEnvelopes.length > 0
                 ? 'bg-emerald-500/10 text-emerald-700 border border-emerald-500/20'
                 : 'bg-white/40 text-slate-500 border border-white/60'
             }`}
           >
-            {autoTransferAmount || linkedEnvelopes.length > 0 ? 'Aktywny' : 'Ustaw'}
+            {autoTransferAmount || linkedEnvelopes.length > 0 ? 'Aktywny' : (isReadOnly ? 'Brak' : 'Ustaw')}
           </button>
         </div>
         
@@ -356,7 +359,7 @@ export default function SavingGoalCard({
       </div>
 
       {/* Manual Actions (Deposit / Withdraw) */}
-      {!isClosed && (
+      {!isClosed && !isReadOnly && (
         <div className="relative z-10 grid grid-cols-2 gap-2 mt-2">
           {/* Deposit action */}
           {!isDepositOpen ? (

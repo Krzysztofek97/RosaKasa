@@ -47,6 +47,12 @@ const POLISH_MONTHS = [
   'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
 ];
 
+export const ReadOnlyContext = React.createContext<boolean>(false);
+
+const READ_ONLY_USERS: Record<string, string> = {
+  'podglad@budzet.pl': 'lW4Fj3p9q2g8aIgyMmL78IayvUv1'
+};
+
 // ---------------------------------------------------------------
 // HELPERS
 // ---------------------------------------------------------------
@@ -454,6 +460,8 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
 
+  const isReadOnly = user?.email ? !!READ_ONLY_USERS[user.email] : false;
+
   // ---- STATE ----
   const [budgets, setBudgets] = useState<BudgetAccount[]>([]);
   const [activeBudgetId, setActiveBudgetId] = useState<string>('default');
@@ -557,6 +565,8 @@ export default function App() {
 
   // ---- CLOUD SYNC HELPER ----
   const syncBudgetsToCloud = (newBudgets: BudgetAccount[]) => {
+    if (isReadOnly) return; // Zablokuj zapis dla konta gościa
+    
     setBudgets(newBudgets);
     const currentUser = auth.currentUser;
     if (currentUser) {
@@ -580,7 +590,8 @@ export default function App() {
       return;
     }
 
-    const budgetRef = doc(db, 'budgets', user.uid);
+    const targetUid = user.email && READ_ONLY_USERS[user.email] ? READ_ONLY_USERS[user.email] : user.uid;
+    const budgetRef = doc(db, 'budgets', targetUid);
     const unsubscribeDb = onSnapshot(budgetRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.data();
@@ -1700,7 +1711,8 @@ export default function App() {
 
   // ---- JSX ----
   return (
-    <div className="min-h-screen bg-slate-50 font-sans overflow-x-hidden">
+    <ReadOnlyContext.Provider value={isReadOnly}>
+      <div className="min-h-screen font-sans bg-slate-950 flex flex-col relative text-slate-200 overflow-x-hidden selection:bg-rose-500/30 selection:text-white">
       <div className="flex">
         {/* Sidebar desktop */}
         <DesktopSidebar
@@ -1761,7 +1773,7 @@ export default function App() {
                         if (env) setAllocateEnvelope({ envelope: env, initialMode: 'withdraw' });
                       }}
                     />
-                    {!activeMonth.isClosed && (
+                    {!activeMonth.isClosed && !isReadOnly && (
                       <div className="flex gap-2">
                         <button
                           onClick={() => setIsReorderOpen(true)}
@@ -1801,7 +1813,7 @@ export default function App() {
                         <EnvelopeCard
                           key={env.id}
                           envelope={env}
-                          isClosed={activeMonth.isClosed}
+                          isClosed={activeMonth.isClosed || isReadOnly}
                           settings={settings}
                           onClick={(e) => setActionsEnvelope(e)}
                           onDropFreeFunds={(envelope) => setAllocateEnvelope({ envelope, initialMode: 'allocate' })}
@@ -1825,6 +1837,7 @@ export default function App() {
                 <motion.div key="savings" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-bold text-slate-800">Cele oszczędnościowe</h2>
+                    {!isReadOnly && (
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => setIsInterestModalOpen(true)}
@@ -1837,12 +1850,13 @@ export default function App() {
                       </button>
                       <button
                         onClick={() => { setGoalToEdit(null); setIsAddGoalOpen(true); }}
-                        className="flex items-center gap-2 bg-teal-600 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer hover:bg-teal-700 transition-all"
+                        className="flex items-center gap-2 bg-teal-600 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer hover:teal-700 transition-all"
                       >
                         <LucideIcon name="Plus" size={14} />
                         Nowy cel
                       </button>
                     </div>
+                    )}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {activeMonth.savingGoals.length === 0 ? (

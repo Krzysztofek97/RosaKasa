@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Transaction, PlannedTransaction, Envelope, SavingGoal, BudgetMonth } from '../types';
 import { formatCurrency } from '../utils';
 import LucideIcon from './LucideIcon';
+import { ReadOnlyContext } from '../App';
+import { useContext } from 'react';
 
 interface TransactionListProps {
   transactions: Transaction[];
@@ -41,6 +43,7 @@ export default function TransactionList({
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'expense' | 'income' | 'saving_transfer' | 'interest'>('all');
   const [activeSection, setActiveSection] = useState<'history' | 'planned'>('history');
+  const isReadOnly = useContext(ReadOnlyContext);
   
   const [isMonthOpen, setIsMonthOpen] = useState(false);
   const monthDropdownRef = useRef<HTMLDivElement>(null);
@@ -317,7 +320,7 @@ export default function TransactionList({
                             </p>
                             <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider mt-0.5">{badge.label}</p>
                           </div>
-                          {!isClosed && (
+                          {!isClosed && !isReadOnly && (
                             <div className="flex items-center gap-1 shrink-0">
                               <button
                                 onClick={() => onEditTransaction(t)}
@@ -433,7 +436,7 @@ export default function TransactionList({
                           <span className={`font-mono font-extrabold text-sm ${pt.type === 'expense' ? 'text-rose-600' : 'text-emerald-600'}`}>
                             {pt.type === 'expense' ? '-' : '+'}{formatCurrency(pt.amount)}
                           </span>
-                          {!isClosed && (
+                          {!isClosed && !isReadOnly && (
                             <div className="flex items-center gap-1">
                               <button
                                 onClick={() => onConfirmPlanned(pt.id)}
