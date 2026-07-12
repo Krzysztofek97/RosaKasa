@@ -460,7 +460,7 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
 
-  const isReadOnly = user?.email ? !!READ_ONLY_USERS[user.email] : false;
+  const isReadOnly = user?.email ? !!READ_ONLY_USERS[user.email.toLowerCase()] : false;
 
   // ---- STATE ----
   const [budgets, setBudgets] = useState<BudgetAccount[]>([]);
@@ -590,7 +590,7 @@ export default function App() {
       return;
     }
 
-    const targetUid = user.email && READ_ONLY_USERS[user.email] ? READ_ONLY_USERS[user.email] : user.uid;
+    const targetUid = user.email && READ_ONLY_USERS[user.email.toLowerCase()] ? READ_ONLY_USERS[user.email.toLowerCase()] : user.uid;
     const budgetRef = doc(db, 'budgets', targetUid);
     const unsubscribeDb = onSnapshot(budgetRef, (snapshot) => {
       if (snapshot.exists()) {

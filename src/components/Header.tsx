@@ -96,7 +96,7 @@ export default function Header({
           </div>
           
           {budgets && budgets.length > 0 && activeBudgetId && (
-            <div className="relative ml-2" ref={budgetDropdownRef}>
+            <div className="relative ml-2 flex items-center gap-2" ref={budgetDropdownRef}>
               <button
                 onClick={() => setIsBudgetOpen(!isBudgetOpen)}
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-white/80 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 hover:bg-slate-50 transition-all cursor-pointer shadow-xs"
@@ -107,6 +107,12 @@ export default function Header({
                 </span>
                 <LucideIcon name="ChevronDown" size={14} className={`text-slate-400 transition-transform ${isBudgetOpen ? 'rotate-180' : ''}`} />
               </button>
+
+              {isReadOnly && (
+                <span className="bg-rose-500/10 text-rose-600 border border-rose-500/20 px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-widest ml-1 flex items-center gap-1 shadow-sm shrink-0">
+                  <LucideIcon name="Eye" size={10} /> Tryb podglądu
+                </span>
+              )}
 
               <AnimatePresence>
                 {isBudgetOpen && (
