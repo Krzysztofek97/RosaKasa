@@ -1712,7 +1712,7 @@ export default function App() {
   // ---- JSX ----
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
-      <div className="min-h-screen font-sans bg-slate-950 flex flex-col relative text-slate-200 overflow-x-hidden selection:bg-rose-500/30 selection:text-white">
+      <div className="min-h-screen font-sans bg-slate-50 flex flex-col relative text-slate-900 overflow-x-hidden selection:bg-rose-500/30 selection:text-white">
       <div className="flex">
         {/* Sidebar desktop */}
         <DesktopSidebar
