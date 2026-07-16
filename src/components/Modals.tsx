@@ -953,28 +953,15 @@ export function ChangelogModal({ isOpen, onClose }: { isOpen: boolean; onClose: 
 
   const logs = [
     {
-      version: 'v2.0 (Aktualna)',
-      date: '2026-06-29',
-      badge: 'Przebudowa logiki budżetu',
+      version: 'v1.0 (Aktualna)',
+      date: '2026-07-16',
+      badge: 'Nowy początek',
       badgeColor: 'bg-indigo-600 text-white',
       items: [
-        { title: 'Usunięcie limitów kopert', description: 'Koperty nie mają już sztucznych limitów (planów wydatków). Teraz w kopercie jest dokładnie tyle, ile przydzielisz z portfela.' },
-        { title: 'Portfel jako sejf', description: 'Portfel to specjalny "sejf" z pieniędzmi do rozdysponowania. Wpadają tu przychody po odhaczyciu, a Ty decydujesz gdzie je przydzielić.' },
-        { title: 'Przenoszenie per koperta', description: 'Każda koperta ma własne ustawienie przenoszenia — możesz wybrać czy niewydane środki wracają do tej samej koperty lub trafiają do wybranego celu oszczędnościowego.' },
-        { title: 'Rachunki zawsze z kopertą', description: 'Każdy stały rachunek musi być przypisany do koperty. Opłacenie rachunku pobiera bezpośrednio z koperty — portfel nie jest dotykany.' },
-        { title: 'Przydziel / Wycofaj środki', description: 'Nowy modal do elastycznego zarządzania środkami między portfelem a kopertami — w obie strony.' },
+        { title: 'Wersja bazowa', description: 'Od teraz oficjalnie rejestrujemy nowe funkcje, ważne usprawnienia oraz kluczowe poprawki w aplikacji.' },
+        { title: 'Usprawnienia mobilne', description: 'Dostosowano karty kopert do małych ekranów (wyeliminowano problem nachodzenia etykiet na ikony) oraz wyłączono automatyczne wysuwanie klawiatury w modalach z formularzami.' },
       ]
-    },
-    {
-      version: 'v1.7',
-      date: '2026-06-25',
-      badge: 'Zamykanie Miesiąca & Przenoszenie',
-      badgeColor: 'bg-emerald-600 text-white',
-      items: [
-        { title: 'Automatyczne przenoszenie środków', description: 'Niewykorzystane środki przechodzą automatycznie na kolejny miesiąc.' },
-        { title: 'Kompaktowy przycisk zamknięcia', description: 'Elegancki przycisk zamknięcia w nagłówku zamiast dużego panelu.' },
-      ]
-    },
+    }
   ];
 
   return (
@@ -1031,7 +1018,7 @@ export function ChangelogModal({ isOpen, onClose }: { isOpen: boolean; onClose: 
         </div>
 
         <div className="p-6 border-t border-white/50 bg-white/40 backdrop-blur-xs flex justify-between items-center shrink-0">
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">RosaKasa v2.0.0</p>
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">RosaKasa v1.0</p>
           <button onClick={onClose} className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer" id="btn-confirm-changelog-close">
             Zamknij
           </button>
