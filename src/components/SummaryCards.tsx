@@ -246,7 +246,6 @@ export default function SummaryCards({
             <div className="relative flex-1">
               <input
                 type="number"
-                autoFocus
                 step="0.01"
                 placeholder={String(freeFunds)}
                 value={walletInput}

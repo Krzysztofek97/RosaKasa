@@ -392,7 +392,6 @@ export default function SavingGoalCard({
                   max={unallocatedFunds}
                   step="any"
                   min="0.01"
-                  autoFocus
                   id={`input-deposit-${id}`}
                 />
                 <button
@@ -446,7 +445,6 @@ export default function SavingGoalCard({
                   max={current}
                   step="any"
                   min="0.01"
-                  autoFocus
                   id={`input-withdraw-${id}`}
                 />
                 <button

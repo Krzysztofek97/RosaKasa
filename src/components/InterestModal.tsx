@@ -152,7 +152,6 @@ export default function InterestModal({ isOpen, onClose, onSave, goals }: Intere
                       step="0.01"
                       min="0.01"
                       className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-3 pr-10 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400/40 focus:border-emerald-400 transition-all"
-                      autoFocus
                       id="input-interest-total"
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 pointer-events-none">zł</span>

@@ -155,7 +155,6 @@ export default function AllocateModal({ isOpen, onClose, envelope, freeFunds, on
               onChange={e => setAmount(e.target.value)}
               placeholder="0"
               className="w-full text-2xl font-black text-center bg-slate-50 border-2 border-slate-200 rounded-2xl px-4 py-3 text-slate-800 focus:outline-none focus:border-slate-400 focus:bg-white transition-all"
-              autoFocus
             />
             {numAmount > 0 && !isValid && (
               <p className="text-xs text-rose-500 mt-1.5 text-center font-medium">

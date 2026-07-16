@@ -764,7 +764,7 @@ export function AddExpenseModal({ isOpen, onClose, envelope, activeMonth, onSave
                 placeholder="0.00"
                 value={amount} onChange={e => setAmount(e.target.value)}
                 className="w-full text-2xl font-black bg-white/60 border border-white/60 focus:bg-white focus:border-rose-400/50 focus:outline-none rounded-2xl px-5 py-4 transition-all pr-16 font-mono text-slate-800 shadow-inner text-center"
-                step="1" min="0" autoFocus
+                step="1" min="0"
                 id="input-expense-amount"
               />
               <span className="absolute right-5 top-5 text-sm font-bold text-slate-400">PLN</span>
@@ -1134,7 +1134,7 @@ export function AddIncomeModal({ isOpen, onClose, activeMonth, onSave, onSavePla
                 placeholder="0.00"
                 value={amount} onChange={e => setAmount(e.target.value)}
                 className="w-full text-sm font-extrabold text-emerald-700 bg-white/60 border border-slate-200/60 rounded-xl pl-3.5 pr-12 py-3 focus:outline-none focus:border-emerald-400/50 focus:bg-white transition-all font-mono"
-                id="input-income-amount" autoFocus
+                id="input-income-amount"
               />
               <span className="absolute right-4 top-3 text-xs font-extrabold text-emerald-600 font-mono">PLN</span>
             </div>
