@@ -118,16 +118,16 @@ export default function EnvelopeCard({
       </svg>
 
       {/* Znaczek pocztowy z ikoną kategorii w prawym górnym rogu (z-20, aby nie chował się pod białe tło) */}
-      <div className="absolute top-2 right-2 w-8 h-8 bg-white border border-dashed border-slate-400 rounded-sm shadow-sm flex items-center justify-center rotate-6 z-20 select-none pointer-events-none">
+      <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-7 h-7 sm:w-8 sm:h-8 bg-white border border-dashed border-slate-400 rounded-sm shadow-sm flex items-center justify-center rotate-6 z-20 select-none pointer-events-none">
         <LucideIcon name={envelope.icon} size={14} className={colorCfg.text} />
       </div>
 
       {/* Naklejka adresowa (Label z nazwą i środkami) na środku (z-10) */}
-      <div className="absolute left-1/2 top-[50%] -translate-x-1/2 -translate-y-1/2 w-[84%] bg-white rounded-xl shadow-md border border-slate-100/80 p-2.5 xl:p-2 text-center z-10 transition-all pointer-events-none">
-        <div className="text-[10px] xl:text-[9px] font-bold text-slate-600 tracking-wider uppercase px-1 line-clamp-2 leading-tight">
+      <div className="absolute left-1/2 top-[52%] sm:top-[50%] -translate-x-1/2 -translate-y-1/2 w-[78%] sm:w-[84%] bg-white rounded-xl shadow-md border border-slate-100/80 p-2 sm:p-2.5 xl:p-2 text-center z-10 transition-all pointer-events-none">
+        <div className="text-[9px] sm:text-[10px] xl:text-[9px] font-bold text-slate-600 tracking-wider uppercase px-0.5 sm:px-1 line-clamp-2 leading-tight">
           {envelope.name}
         </div>
-        <div className={`text-base xl:text-sm font-black tracking-tight mt-0.5 ${isOverspent ? 'text-rose-600' : 'text-emerald-600'}`}>
+        <div className={`text-[15px] sm:text-base xl:text-sm font-black tracking-tight mt-0.5 ${isOverspent ? 'text-rose-600' : 'text-emerald-600'}`}>
           {formatCurrency(available)}
         </div>
       </div>
