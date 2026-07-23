@@ -19,8 +19,8 @@ Wszystkie poprawki i zmiany w kodzie wprowadzaj **bezpośrednio do plików w pro
 ### 4. Zwięzłe podsumowanie tekstowe
 Szczegóły zmian podawaj jedynie w pliku `walkthrough.md`. Na czacie podawaj jedynie krótką informację (1-2 zdania) o pomyślnym wprowadzeniu zmian.
 
-### 5. Brak automatycznych aktualizacji changelogu
-**NIE aktualizuj** automatycznie changelogu ani numerów wersji aplikacji przy zwykłych poprawkach. Rób to **tylko wtedy, gdy użytkownik o to wprost poprosi**.
+### 5. Obowiązkowa aktualizacja changelogu po zmianach
+Po każdych modyfikacjach lub poprawkach w kodzie **ZAWSZE zaktualizuj changelog w aplikacji** (`ChangelogModal.tsx`). Opisy zmian muszą być napisane w sposób przyjazny i prosty dla użytkowników-laików (bez wyliczy technicznych, np. o refaktoryzacji struktur plików czy modyfikacjach hooków). Mniejsze poprawki należy opisywać w sposób ogólny i zwięzły (np. „Poprawa płynności i stabilności”).
 
 ### 6. Nowe komponenty = nowe pliki
 Jeśli nowa funkcja wymaga **więcej niż 40 linii kodu**, wydziel ją do nowego, osobnego pliku komponentu w `src/components/`. Nie zaśmiecaj pliku `App.tsx` długim kodem — tylko import i użycie komponentu.

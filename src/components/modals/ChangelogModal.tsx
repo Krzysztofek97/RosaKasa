@@ -7,10 +7,21 @@ export function ChangelogModal({ isOpen, onClose }: { isOpen: boolean; onClose: 
 
   const logs = [
     {
-      version: 'v1.0 (Aktualna)',
+      version: 'v1.1 (Aktualna)',
+      date: '2026-07-23',
+      badge: 'Optymalizacja & Stabilność',
+      badgeColor: 'bg-emerald-600 text-white',
+      items: [
+        { title: 'Przyspieszenie działania aplikacji', description: 'Zoptymalizowano proces formatowania kwot i ładowania ikonek, co zapewnia płynniejsze przewijanie list oraz szybsze przełączanie zakładek.' },
+        { title: 'Usprawnienia bezpieczeństwa i stabilności', description: 'Wprowadzono dodatkowe zabezpieczenia danych w chmurze oraz ulepszono niezawodność przeliczania środków między kopertami i portfelem.' },
+        { title: 'Poprawki wizualne i ikonek', description: 'Udoskonalono wyświetlanie kolorów oraz dodano mechanizm zastępczy dla ikonek, zapewniając spójny i czytelny wygląd aplikacji.' },
+      ]
+    },
+    {
+      version: 'v1.0',
       date: '2026-07-16',
-      badge: 'Nowy początek',
-      badgeColor: 'bg-indigo-600 text-white',
+      badge: 'Wersja bazowa',
+      badgeColor: 'bg-slate-600 text-white',
       items: [
         { title: 'Wersja bazowa', description: 'Od teraz oficjalnie rejestrujemy nowe funkcje, ważne usprawnienia oraz kluczowe poprawki w aplikacji.' },
         { title: 'Usprawnienia mobilne', description: 'Dostosowano karty kopert do małych ekranów (wyeliminowano problem nachodzenia etykiet na ikony) oraz wyłączono automatyczne wysuwanie klawiatury w modalach z formularzami.' },
@@ -72,7 +83,7 @@ export function ChangelogModal({ isOpen, onClose }: { isOpen: boolean; onClose: 
         </div>
 
         <div className="p-6 border-t border-white/50 bg-white/40 backdrop-blur-xs flex justify-between items-center shrink-0">
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">RosaKasa v1.0</p>
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">RosaKasa v1.1</p>
           <button onClick={onClose} className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer" id="btn-confirm-changelog-close">
             Zamknij
           </button>
