@@ -46,8 +46,8 @@ export default function InterestModal({ isOpen, onClose, onSave, goals }: Intere
     }));
   }, [totalAmount, eligibleGoals, totalBalance]);
 
-  const manualTotal = Object.values(manualAmounts).reduce((s, v) => {
-    const n = parseFloat(v);
+  const manualTotal = Object.values(manualAmounts).reduce<number>((s, v) => {
+    const n = parseFloat(String(v));
     return s + (isNaN(n) ? 0 : n);
   }, 0);
 

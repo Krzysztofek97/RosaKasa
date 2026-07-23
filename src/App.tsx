@@ -57,7 +57,7 @@ const READ_ONLY_USERS: Record<string, string> = {
 // HELPERS
 // ---------------------------------------------------------------
 function genId(prefix: string) {
-  return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
 }
 
 function getAdjustedDateForMonth(originalDate: string, targetMonthId: string): string {
@@ -991,14 +991,17 @@ export default function App() {
 
   /** Przydziela środki z Wolnych Środków do koperty */
   const handleAllocateToEnvelope = (envelopeId: string, amount: number) => {
+    const targetMonth = months.find(m => m.id === selectedMonthId);
+    if (!targetMonth) return;
+    if (amount > targetMonth.freeFunds) {
+      showAlert('Brak środków', `Masz tylko ${formatCurrency(targetMonth.freeFunds)} w Wolnych Środkach.`);
+      return;
+    }
+
     const updatedMonths = months.map(m => {
       if (m.id !== selectedMonthId) return m;
       const env = m.envelopes.find(e => e.id === envelopeId);
       if (!env) return m;
-      if (amount > m.freeFunds) {
-        showAlert('Brak środków', `Masz tylko ${formatCurrency(m.freeFunds)} w Wolnych Środkach.`);
-        return m;
-      }
       return {
         ...m,
         freeFunds: m.freeFunds - amount,
@@ -1011,15 +1014,18 @@ export default function App() {
   };
 
   const handleWithdrawFromEnvelope = (envelopeId: string, amount: number) => {
+    const targetMonth = months.find(m => m.id === selectedMonthId);
+    if (!targetMonth) return;
+    const env = targetMonth.envelopes.find(e => e.id === envelopeId);
+    if (!env) return;
+    const maxWithdraw = (env.rollover ?? 0) + env.allocated - env.spent;
+    if (amount > maxWithdraw) {
+      showAlert('Za dużo', `Możesz wycofać maksymalnie ${formatCurrency(maxWithdraw)} z tej koperty.`);
+      return;
+    }
+
     const updatedMonths = months.map(m => {
       if (m.id !== selectedMonthId) return m;
-      const env = m.envelopes.find(e => e.id === envelopeId);
-      if (!env) return m;
-      const maxWithdraw = (env.rollover ?? 0) + env.allocated - env.spent;
-      if (amount > maxWithdraw) {
-        showAlert('Za dużo', `Możesz wycofać maksymalnie ${formatCurrency(maxWithdraw)} z tej koperty.`);
-        return m;
-      }
       return {
         ...m,
         freeFunds: m.freeFunds + amount,
@@ -1032,18 +1038,20 @@ export default function App() {
   };
 
   const handleTransferBetweenEnvelopes = (sourceId: string, targetId: string, amount: number) => {
+    const targetMonth = months.find(m => m.id === selectedMonthId);
+    if (!targetMonth) return;
+    const sourceEnv = targetMonth.envelopes.find(e => e.id === sourceId);
+    const targetEnv = targetMonth.envelopes.find(e => e.id === targetId);
+    if (!sourceEnv || !targetEnv) return;
+
+    const maxTransfer = (sourceEnv.rollover ?? 0) + sourceEnv.allocated - sourceEnv.spent;
+    if (amount > maxTransfer) {
+      showAlert('Błąd', `Możesz przenieść maksymalnie ${formatCurrency(maxTransfer)}.`);
+      return;
+    }
+
     const updatedMonths = months.map(m => {
       if (m.id !== selectedMonthId) return m;
-      const sourceEnv = m.envelopes.find(e => e.id === sourceId);
-      const targetEnv = m.envelopes.find(e => e.id === targetId);
-      if (!sourceEnv || !targetEnv) return m;
-      
-      const maxTransfer = (sourceEnv.rollover ?? 0) + sourceEnv.allocated - sourceEnv.spent;
-      if (amount > maxTransfer) {
-        showAlert('Błąd', `Możesz przenieść maksymalnie ${formatCurrency(maxTransfer)}.`);
-        return m;
-      }
-      
       return {
         ...m,
         envelopes: m.envelopes.map(e => {

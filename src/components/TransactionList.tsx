@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Transaction, PlannedTransaction, Envelope, SavingGoal, BudgetMonth } from '../types';
 import { formatCurrency } from '../utils';
+import { getColorConfig } from '../data';
 import LucideIcon from './LucideIcon';
 import { ReadOnlyContext } from '../App';
 import { useContext } from 'react';
@@ -121,8 +122,9 @@ export default function TransactionList({
       const envelope = t.envelopeId ? envelopes.find(e => e.id === t.envelopeId) : null;
       if (envelope) {
         mainIcon = envelope.icon;
-        mainColorClass = `text-${envelope.color}-600`;
-        bgClass = `bg-${envelope.color}-500/10 border-${envelope.color}-500/25`;
+        const colConfig = getColorConfig(envelope.color);
+        mainColorClass = colConfig.text;
+        bgClass = `${colConfig.bgLight} ${colConfig.border}`;
       } else {
         mainIcon = badge.icon;
         mainColorClass = badge.iconColor;
@@ -135,8 +137,9 @@ export default function TransactionList({
       const isWithdrawal = (t as Transaction).isWithdrawal;
       if (goal && goal.icon && goal.color) {
         mainIcon = goal.icon;
-        mainColorClass = `text-${goal.color}-600`;
-        bgClass = `bg-${goal.color}-500/10 border-${goal.color}-500/25`;
+        const colConfig = getColorConfig(goal.color);
+        mainColorClass = colConfig.text;
+        bgClass = `${colConfig.bgLight} ${colConfig.border}`;
       } else {
         mainIcon = badge.icon;
         mainColorClass = badge.iconColor;
